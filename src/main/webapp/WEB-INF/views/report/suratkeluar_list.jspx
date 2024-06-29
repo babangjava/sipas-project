@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	 xmlns:c="http://java.sun.com/jsp/jstl/core"
+	 xmlns:s="http://www.springframework.org/tags"
+	 xmlns:form="http://www.springframework.org/tags/form"
+	 xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	 xmlns:input="urn:jsptagdir:/WEB-INF/tags/input"
+	 xmlns:display="urn:jsptagdir:/WEB-INF/tags/display"
+	 version="2.0">
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+	<jsp:output omit-xml-declaration="yes"/>
+	<div class="container">
+		<fieldset class="col-sm-10 bordure">
+
+			<util:message message="${message}" messages="${messages}" />
+
+			<form:form class="form-horizontal" modelAttribute="reportModel" cssClass="well form-horizontal" method="POST" action="${pageContext.request.contextPath}/report/suratkeluar/submit">
+				<form:errors path="*" cssClass="alert alert-danger" element="div" />
+
+				<div class="form-group">
+					<label for="tanggalAwal" class="col-sm-2 control-label">Tanggal Awal</label>
+					<div class="col-sm-3">
+						<input:date id="tanggalAwal" name="tanggalAwal" />  <!-- DATE type -->
+					</div>
+
+					<label for="tanggalAkhir" class="col-sm-2 control-label">Tanggal Akhir</label>
+					<div class="col-sm-3">
+						<input:date id="tanggalAkhir" name="tanggalAkhir"  />  <!-- DATE type -->
+					</div>
+
+					<div class="col-sm-2">
+						<button type="submit" class="btn btn-primary btn-md btn-block">VIEW</button>
+					</div>
+				</div>
+
+			</form:form>
+
+			<div class="form-group">
+				<div class="col-sm-offset-8 col-sm-2">
+					<button onclick="generatePDF()" class="btn btn-info btn-sm btn-block">PDF</button>
+				</div>
+				<div class="col-sm-2">
+					<button onclick="generateExcel()" class="btn btn-success btn-sm btn-block">XLS</button>
+				</div>
+			</div>
+			<br/>
+			<br/>
+
+			<table id="tableSuratKeluar"
+				   data-toggle="table"
+				   data-side-pagination="client"
+				   data-pagination="true"
+				   data-page-size="10"
+				   class="table table-striped" style="font-size: 12px;">
+				<thead>
+				<tr>
+					<th data-visible="false" data-field="id" >Id</th>
+					<th data-field="noSurat" >Nomor Surat</th>
+					<th data-field="tanggal" >Tanggal surat</th>
+					<th data-field="prihal" >Perihal</th>
+					<th data-field="tujuan" >Tujuan</th>
+					<th data-field="departement" >Unit Kerja</th>
+					<th data-field="pembuatSurat" >Pembuat</th>
+					<th data-visible="false" data-field="documentId" />
+				</tr>
+				</thead>
+				<tbody>
+				<c:forEach items="${list}" var="item">
+					<tr>
+						<td>${item.id}</td>
+						<td>${item.noSurat}</td>
+						<td><display:date value="${item.tanggal}"/></td>
+						<td>${item.prihal}</td>
+						<td>${item.tujuan}</td>
+						<td>${item.departement}</td>
+						<td>${item.pembuatSurat}</td>
+						<td>${item.documentId}</td>
+					</tr>
+				</c:forEach>
+				</tbody>
+			</table>
+		</fieldset>
+	</div>
+	<script type="text/javascript">
+		$('#pageName').text("Laporan Surat Keluar");
+		window.onload = function() {
+			$("#tanggalAwal").attr("autocomplete", "off");
+			$("#tanggalAkhir").attr("autocomplete", "off");
+		}
+
+		//export table to excel
+		function generateExcel() {
+			//getting data from our table
+			var data_type = 'data:application/vnd.ms-excel';
+			var table_div = document.getElementById('tableSuratKeluar');
+			var table_html = table_div.outerHTML.replace(/ /g, '%20');
+
+			var a = document.createElement('a');
+			a.href = data_type + ', ' + table_html;
+			a.download = 'SURAT_KELUAR.xls';
+			a.click();
+		}
+
+
+		//export table to pdf
+		function generatePDF() {
+			var doc = new jsPDF('l', 'pt');
+
+			var elem = document.getElementById('tableSuratKeluar');
+			var data = doc.autoTableHtmlToJson(elem);
+			doc.autoTable(data.columns, data.rows, {
+						margin: {left: 35},
+						theme: 'grid',
+						tableWidth: 'auto',
+						fontSize: 8,
+						overflow: 'linebreak'
+					}
+			);
+
+			doc.save('SURAT_KELUAR.pdf');
+		}
+
+	</script>
+</div>

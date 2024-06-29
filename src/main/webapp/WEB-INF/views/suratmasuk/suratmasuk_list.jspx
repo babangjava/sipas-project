@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	 xmlns:s="http://www.springframework.org/tags"
+	 xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	 xmlns:display="urn:jsptagdir:/WEB-INF/tags/display"
+	 version="2.0">
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+	<jsp:output omit-xml-declaration="yes"/>
+	<div class="col-sm-12 container">
+		<fieldset class="bordure">
+
+			<util:message message="${message}" messages="${messages}" />
+			<table id="tableSuratMasuk"
+				   data-toggle="table"
+				   data-method="post"
+				   data-url="${pageContext.request.contextPath}/suratmasuk/data-table"
+				   data-content-type="application/json"
+				   data-data-type="json"
+				   data-query-params-type="limit"
+				   data-query-params="QueryParam"
+				   data-side-pagination="server"
+				   data-pagination="true"
+				   data-search="server"
+				   data-page-size="10"
+				   class="table table-striped" style="font-size: 12px;">
+				<thead>
+				<tr>
+					<th data-visible="false" data-sortable="true" data-field="id" >Id</th>
+					<th data-formatter="actionFormatSuratMasukLink" data-sortable="true" data-field="noSurat" >Nomor Surat</th>
+					<th data-sortable="true" data-field="tanggal" >Tanggal Surat</th>
+					<th data-sortable="true" data-field="tanggalDiterima" >Tanggal Diterima</th>
+					<th data-sortable="true" data-field="asalSurat" >Asal Surat</th>
+					<th data-sortable="true" data-field="prihal" >Perihal</th>
+					<th data-sortable="true" data-field="tujuan" >Tujuan</th>
+					<th data-sortable="true" data-field="odner" >Odner</th>
+					<th data-visible="false" data-field="documentId" />
+					<s:url var="url_create" value="/suratmasuk/form"  />
+					<th data-formatter="actionFormatSuratMasuk"><a class="btn btn-info" href='${url_create}'><s:message code="create"/></a></th>
+				</tr>
+				</thead>
+			</table>
+		</fieldset>
+	</div>
+	<script type="text/javascript">
+		$('#pageName').text("Surat Masuk");
+
+		function actionFormatSuratMasuk(value, row, index) {
+			return  '<s:url var="url_update" value="/suratmasuk/form/'+row.id+'"/>' +
+					'<s:url var="url_view" value="/suratmasuk/view/'+row.id+'"/>' +
+					'<a type="button" class="btn btn-default" href="${url_update}"><span class="glyphicon glyphicon-edit"></span></a> ' +
+					'<a type="button" class="btn btn-default" href="${url_view}"><span class="glyphicon glyphicon-eye-open"></span></a>';
+		}
+
+		function actionFormatSuratMasukLink(value, row, index) {
+			return	'<s:url var="url_download" value="/suratmasuk/download/'+row.documentId+'"/>' +
+					'<a target="_blank" href="${url_download}">'+row.noSurat+'</a> ';
+		}
+
+		function QueryParam(params) {
+			return params;
+		}
+
+
+	</script>
+</div>
