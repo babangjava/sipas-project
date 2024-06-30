@@ -10,19 +10,15 @@
     </h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">O0ps i did it again :P</li>
+        <li class="active">Terjadi Kesalahan</li>
     </ol>
 </div>
 <div layout:fragment="content">
     <div class="error-page">
         <h2 class="headline text-yellow" th:text="${status}"></h2>
         <div class="error-content">
-            <h3><i class="fa fa-warning text-yellow"></i>Oops! Weleh Weleh Page not found.</h3>
+            <h3><i class="fa fa-warning text-yellow"></i>Oops! Page not found.</h3>
             <p th:text="${message}"></p>
-            <p>
-                We could not find the page you were looking for.
-                Meanwhile, you may <a href="/">return to dashboard</a> or try using the search form.
-            </p>
         </div>
     </div>
 </div>
