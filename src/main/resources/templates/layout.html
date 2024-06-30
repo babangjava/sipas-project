@@ -74,7 +74,7 @@
         <a href="#" th:href="@{/}" class="logo">
             <span class="logo-mini"><b>A</b>D</span>
             <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><b>APLIKASI</b>Karyawan</span>
+            <span class="logo-lg">Aplikasi Esteh Jondol</span>
         </a>
 
         <!-- Header Navbar -->
@@ -132,41 +132,43 @@
             <ul class="sidebar-menu">
                 <li class="header">Menu</li>
 
-                <li class="treeview" id="datamaster" sec:authorize="hasRole('USER')">
+                <li class="treeview" id="datamaster" sec:authorize="hasRole('ADMIN')">
                     <a href="#"><i class="fa fa-th"></i> <span>Data Master</span>
                         <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li sec:authorize="hasRole('USER')"><a th:href="@{/karyawan/list}">Karyawan</a></li>
-                        <li sec:authorize="hasRole('USER')"><a th:href="@{/alamat/list}">Alamat</a></li>
+                        <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/user/list}">User</a></li>
+                        <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/cabang/list}">Cabang</a></li>
+                        <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/bahan-baku/list}">Bahan Baku</a></li>
 
                     </ul>
                 </li>
 
-                <li class="treeview" id="kegiatandosen" sec:authorize="hasRole('USER')">
-                    <a href="#"><i class="fa fa-inbox"></i> <span>Kegiatan</span>
+                <li class="treeview" id="transaksi">
+                    <a href="#"><i class="fa fa-inbox"></i> <span>Transaksi</span>
                         <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
                     </a>
-
                     <ul class="treeview-menu">
-                        <li><a th:href="@{/kegiatan/kbm/list}">Halo</a></li>
+                        <li ><a th:href="@{/transaksi/bahan-baku/list}">Bahan Baku</a></li>
+                        <li ><a th:href="@{/transaksi/omset/list}">Omset</a></li>
 
                     </ul>
                 </li>
 
-                <li class="treeview" id="laporan">
+                <li class="treeview" id="laporan" sec:authorize="hasRole('ADMIN')">
                     <a href="#"><i class="fa fa-book"></i> <span>Laporan</span>
                         <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="#">Laporan 1</a></li>
-                        <li><a href="#">Laporan 2</a></li>
+                        <li><a href="#">Laporan Harian</a></li>
+                        <li><a href="#">Laporan Mingguan</a></li>
+                        <li><a href="#">Laporan Bualanan</a></li>
                     </ul>
                 </li>
 
@@ -188,9 +190,9 @@
     <!-- /.content-wrapper -->
     <!-- Main Footer -->
     <footer class="main-footer">
-        <strong> &copy; 2017
-            <script>new Date().getFullYear() > 2017 && document.write("-" + new Date().getFullYear());</script>
-            , Company.</strong>
+        <strong> &copy; 2023
+            <script>new Date().getFullYear() > 2023 && document.write("-" + new Date().getFullYear());</script>
+            , Aplikasi Esteh Jondol</strong>
     </footer>
     <div class="control-sidebar-bg"></div>
 </div>

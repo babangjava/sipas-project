@@ -20,7 +20,7 @@ public class SpringSecurity {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/registration/**").permitAll()
                         .requestMatchers("/login/**").permitAll()
@@ -35,7 +35,7 @@ public class SpringSecurity {
                         .permitAll()
                 )
                 .logout((logout) -> logout.permitAll())
-                .exceptionHandling().accessDeniedPage("/access-denied");
+                .exceptionHandling(exception -> exception.accessDeniedPage("/access-denied"));
         return http.build();
     }
 
