@@ -41,9 +41,9 @@
                             <tr th:each="st,iter : ${transaksiCabang}">
                                 <td th:text="${iter.count}">1</td>
                                 <td th:text="${st.namaCabang}">Nama Cabang</td>
-                                <td th:text="${st.tglTransaksi}">Alamat</td>
-                                <td th:text="${st.namaBahan}">Email</td>
-                                <td th:text="${st.qty}">Password</td>
+                                <td th:text="${st.tglTransaksi}">Tgl Transaksi</td>
+                                <td th:text="${st.namaBahan}">Nama Bahan</td>
+                                <td th:text="${st.qty}+' '+${st.type}" >qty</td>
                                 <td th:text="${st.catatan}">Catatan</td>
                                 <td>
                                     <a href="#" class="btn btn-default" th:href="@{/transaksi/cabang/form(id=${st.id})}"
