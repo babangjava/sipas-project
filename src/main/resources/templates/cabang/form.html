@@ -1,0 +1,77 @@
+<!--/* Thymeleaf templating engine, Each token will be replaced by their respective titles in the resulting page. */-->
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
+<head>
+    <title>Cabang</title>
+</head>
+<body>
+<div layout:fragment="breadcrumb">
+    <h1>Cabang</h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Cabang</li>
+    </ol>
+</div>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">&nbsp;</h3>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                <form role="form" th:object="${cabang}" method="post">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="nama">Nama Cabang</label>
+                            <input type="text"
+                                   th:field="*{namaCabang}"
+                                   name="nama" class="form-control" id="namaCabang" placeholder="Nama Cabang" />
+                            <label class="control-label error-label" th:if="${#fields.hasErrors('namaCabang')}" th:errors="*{namaCabang}">
+                                Pesan error nanti di sini
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="nama">Alamat</label>
+                            <input type="text"
+                                   th:field="*{alamat}"
+                                   name="alamat" class="form-control" id="alamat" placeholder="Alamat" />
+                            <label class="control-label error-label"  th:if="${#fields.hasErrors('alamat')}"th:errors="*{alamat}">
+                                Pesan error nanti di sini
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="nama">Email</label>
+                            <select th:field="*{email}" class="form-control" id="email">
+                                <option value="">Pilih Email</option>
+                                <option value="1@gmail.com">1@gmail.com</option>
+                                <option value="2@gmail.com">2@gmail.com</option>
+                                <option value="3@gmail.com">3@gmail.com</option>
+                            </select>
+                            <label class="control-label error-label"  th:if="${#fields.hasErrors('email')}"th:errors="*{email}">
+                                Pesan error nanti di sini
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="nama">Password</label>
+                            <input type="text"
+                                   th:field="*{password}"
+                                   name="password" class="form-control" id="password" placeholder="Password" />
+                            <label class="control-label error-label"  th:if="${#fields.hasErrors('password')}"th:errors="*{password}">
+                                Pesan error nanti di sini
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <a th:href="@{/cabang/list}" class="btn btn-default" role="button" title="Back list">
+                                <span aria-hidden="true"></span>Batal
+                            </a>
+                            <button type="submit" class="box-title btn btn-primary" title="Save Data">Simpan</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
