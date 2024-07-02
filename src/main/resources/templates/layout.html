@@ -143,16 +143,15 @@
                     </ul>
                 </li>
 
-                <li class="treeview" id="transaksi">
+                <li class="treeview" id="transaksi" sec:authorize="hasRole('USER')">
                     <a href="#"><i class="fa fa-inbox"></i> <span>Transaksi</span>
                         <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li ><a th:href="@{/transaksi/bahan-baku/list}">Bahan Baku</a></li>
-                        <li ><a th:href="@{/transaksi/cabang/list}">Cabang</a></li>
-                        <li ><a th:href="@{/transaksi/omset/list}">Omset</a></li>
+                        <li sec:authorize="hasRole('USER')"><a th:href="@{/transaksi/cabang/list}">Bahan Baku</a></li>
+                        <li sec:authorize="hasRole('USER')"><a th:href="@{/transaksi/omzet/list}">Omset</a></li>
 
                     </ul>
                 </li>
@@ -164,6 +163,7 @@
                                 </span>
                     </a>
                     <ul class="treeview-menu">
+                        <li><a href="#">Laporan Cabang</a></li>
                         <li><a href="#">Laporan Harian</a></li>
                         <li><a href="#">Laporan Mingguan</a></li>
                         <li><a href="#">Laporan Bualanan</a></li>

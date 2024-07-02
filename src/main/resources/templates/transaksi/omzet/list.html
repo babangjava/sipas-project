@@ -1,0 +1,81 @@
+<!--/* Thymeleaf templating engine, Each token will be replaced by their respective titles in the resulting page. */-->
+<html  xmlns:th="http://thymeleaf.org" layout:decorate="~{layout}">
+<head>
+    <title>Cabang</title>
+</head>
+<body>
+<div layout:fragment="breadcrumb">
+    <h1>Omzet</h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Omzet</li>
+    </ol>
+</div>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <a class="box-title btn btn-primary" th:href="@{/transaksi/omzet/form}">Tambah Omzet</a>
+                </div>
+
+
+                <!-- /.box-header -->
+                <div class="box-body">
+                    Show <span sd:page-size-selector="javascript"></span> entries
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th> No</th>
+                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="namaCabang">Nama Cabang</th>
+                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="tglTransaksi">Tgl Transaksi</th>
+                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="omzet">Omzet</th>
+                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="catatan">Catatan</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="st,iter : ${transaksiOmzet}">
+                                <td th:text="${iter.count}">1</td>
+                                <td th:text="${st.namaCabang}">Nama Cabang</td>
+                                <td th:text="${st.omzet}">Omzet</td>
+                                <td th:text="${st.catatan}">Catatan</td>
+                                <td>
+                                    <a href="#" class="btn btn-default" th:href="@{/transaksi/omzet/form(id=${st.id})}"
+                                       title="Edit Data"><span class="glyphicon glyphicon-edit"></span></a>
+                                    <a href="#" class="btn btn-default" th:href="@{/transaksi/omzet/delete(id=${st.id})}"
+                                       title="Delete Data"><span class="glyphicon glyphicon-trash"></span></a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(transaksiOmzet.content)}">
+                                <td colspan="13" class="text-center">Data Cabang tidak ditemukan</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                <div th:if="${not #lists.isEmpty(transaksiOmzet.content)}">
+
+                    <div sd:pagination-summary="">info</div>
+                    <div class="text-center">
+                        <nav>
+                            <ul class="pagination" sd:pagination="full">
+                                <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                                <li class="disabled"><a href="#" aria-label="Previous"><span
+                                        aria-hidden="true">&laquo;</span></a></li>
+                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

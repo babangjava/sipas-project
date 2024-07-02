@@ -1,7 +1,6 @@
 package com.cb.repository;
 
 import com.cb.model.BahanBaku;
-import com.cb.model.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
