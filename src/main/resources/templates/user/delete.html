@@ -1,14 +1,14 @@
 <!--/* Thymeleaf templating engine, Each token will be replaced by their respective titles in the resulting page. */-->
 <html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
 <head>
-    <title>Hapus Cabang</title>
+    <title>Hapus User</title>
 </head>
 <body>
 <div layout:fragment="breadcrumb">
-    <h1>Hapus Cabang?</h1>
+    <h1>Hapus User?</h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Hapus Cabang</li>
+        <li class="active">Hapus User</li>
     </ol>
 </div>
 <div layout:fragment="content">
@@ -20,18 +20,18 @@
                 </div>
                 <!-- /.box-header -->
                 <!-- form start -->
-                <form role="form" th:object="${cabang}" method="post">
+                <form role="form" th:object="${user}" method="post">
 
                     <div class="box-body">
                         <div class="form-group">
-                            <label for="nama">Nama Cabang</label>
+                            <label for="nama">Nama Email</label>
                             <input type="text"
-                                   th:field="*{namaCabang}"
-                                   name="nama" class="form-control" id="namaCabang" placeholder="Nama Cabang" disabled/>
+                                   th:field="*{email}"
+                                   name="nama" class="form-control" id="email" placeholder="Nama Email" disabled/>
                         </div>
 
                         <div class="form-group">
-                            <a th:href="@{/cabang/list}" class="btn btn-default" role="button" title="Back list">
+                            <a th:href="@{/user/list}" class="btn btn-default" role="button" title="Back list">
                                 <span aria-hidden="true"></span>Batal
                             </a>
                             <button type="submit" class="btn btn-danger" title="Delete Data">Hapus</button>

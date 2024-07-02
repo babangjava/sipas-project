@@ -1,14 +1,14 @@
 <!--/* Thymeleaf templating engine, Each token will be replaced by their respective titles in the resulting page. */-->
 <html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
 <head>
-    <title>Cabang</title>
+    <title>User</title>
 </head>
 <body>
 <div layout:fragment="breadcrumb">
-    <h1>Cabang</h1>
+    <h1>User</h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Cabang</li>
+        <li class="active">User</li>
     </ol>
 </div>
 <div layout:fragment="content">
@@ -20,32 +20,22 @@
                 </div>
                 <!-- /.box-header -->
                 <!-- form start -->
-                <form role="form" th:object="${cabang}" method="post">
+                <form role="form" th:object="${user}" method="post">
                     <div class="box-body">
                         <div class="form-group">
-                            <label for="nama">Nama Cabang</label>
+                            <label for="nama">Nama User</label>
                             <input type="text"
-                                   th:field="*{namaCabang}"
-                                   name="nama" class="form-control" id="namaCabang" placeholder="Nama Cabang" />
-                            <label class="control-label error-label" th:if="${#fields.hasErrors('namaCabang')}" th:errors="*{namaCabang}">
-                                Pesan error nanti di sini
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label for="nama">Alamat</label>
-                            <input type="text"
-                                   th:field="*{alamat}"
-                                   name="alamat" class="form-control" id="alamat" placeholder="Alamat" />
-                            <label class="control-label error-label"  th:if="${#fields.hasErrors('alamat')}"th:errors="*{alamat}">
+                                   th:field="*{name}"
+                                   name="nama" class="form-control" id="name" placeholder="Nama User" />
+                            <label class="control-label error-label" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
                                 Pesan error nanti di sini
                             </label>
                         </div>
                         <div class="form-group">
                             <label for="nama">Email</label>
-                            <select th:field="*{email}" class="form-control" id="email">
-                                <option value="">Pilih Email</option>
-                                <option th:each="user :${users}" th:value="${user.email}" th:text="${user.email}">1@gmail.com</option>
-                            </select>
+                            <input type="text"
+                                   th:field="*{email}"
+                                   name="email" class="form-control" id="email" placeholder="Email" />
                             <label class="control-label error-label"  th:if="${#fields.hasErrors('email')}"th:errors="*{email}">
                                 Pesan error nanti di sini
                             </label>
@@ -60,7 +50,7 @@
                             </label>
                         </div>
                         <div class="form-group">
-                            <a th:href="@{/cabang/list}" class="btn btn-default" role="button" title="Back list">
+                            <a th:href="@{/user/list}" class="btn btn-default" role="button" title="Back list">
                                 <span aria-hidden="true"></span>Batal
                             </a>
                             <button type="submit" class="box-title btn btn-primary" title="Save Data">Simpan</button>

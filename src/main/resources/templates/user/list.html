@@ -1,0 +1,96 @@
+<!--/* Thymeleaf templating engine, Each token will be replaced by their respective titles in the resulting page. */-->
+<html  xmlns:th="http://thymeleaf.org" layout:decorate="~{layout}">
+<head>
+    <title>User</title>
+</head>
+<body>
+<div layout:fragment="breadcrumb">
+    <h1>User</h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">User</li>
+    </ol>
+</div>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <a class="box-title btn btn-primary" th:href="@{/user/form}">Tambah User</a>
+
+
+                    <div class="box-tools">
+                        <form th:action="@{/user/list}" method="get">
+                            <div class="input-group input-group-sm" style="width: 250px;">
+                                <input type="text" name="value" class="form-control pull-right"
+                                       placeholder="Pencarian Berdasarkan Nama" th:if="${key} == null"/>
+                                <input type="text" name="value" class="form-control pull-right"
+                                       placeholder="Pencarian Berdasarkan Nama" th:if="${key} != null"
+                                       th:value="${key}"/>
+                                <div class="input-group-btn">
+                                    <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+
+                <!-- /.box-header -->
+                <div class="box-body">
+                    Show <span sd:page-size-selector="javascript"></span> entries
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th> No</th>
+                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="name">Nama User</th>
+                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="email">Email</th>
+                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="password">Password</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="st,iter : ${user}">
+                                <td th:text="${iter.count}">1</td>
+                                <td th:text="${st.name}">Nama User</td>
+                                <td th:text="${st.email}">Email</td>
+                                <td th:text="${st.password}">Password</td>
+                                <td>
+                                    <a href="#" class="btn btn-default" th:href="@{/user/form(id=${st.id})}"
+                                       title="Edit Data"><span class="glyphicon glyphicon-edit"></span></a>
+                                    <a href="#" class="btn btn-default" th:href="@{/user/delete(id=${st.id})}"
+                                       title="Delete Data"><span class="glyphicon glyphicon-trash"></span></a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(user.content)}">
+                                <td colspan="13" class="text-center">Data User tidak ditemukan</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                <div th:if="${not #lists.isEmpty(user.content)}">
+
+                    <div sd:pagination-summary="">info</div>
+                    <div class="text-center">
+                        <nav>
+                            <ul class="pagination" sd:pagination="full">
+                                <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                                <li class="disabled"><a href="#" aria-label="Previous"><span
+                                        aria-hidden="true">&laquo;</span></a></li>
+                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
