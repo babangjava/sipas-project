@@ -101,14 +101,11 @@
                             <!-- Menu Footer-->
                             <li class="user-footer">
                                 <div class="row">
-                                    <div class="col-xs-4 text-center">
+                                    <div class="col-xs-6 text-center">
                                         <a th:href="@{/editprofile}">Edit Profile</a>
                                     </div>
-                                    <div class="col-xs-4 text-center">
+                                    <div class="col-xs-6 text-center">
                                         <a th:href="@{/changepassword}">Change Password</a>
-                                    </div>
-                                    <div class="col-xs-4 text-center">
-                                        <a th:href="@{/logout}">Sign Out</a>
                                     </div>
                                 </div>
                             </li>
@@ -172,7 +169,10 @@
                         <li><a href="#">Laporan Bualanan</a></li>
                     </ul>
                 </li>
-
+                <!-- Logout Menu -->
+                <li>
+                    <a th:href="@{/logout}"><i class="fa fa-sign-out"></i> <span>Sign Out</span></a>
+                </li>
             </ul>
             <!-- /.sidebar-menu -->
         </section>
