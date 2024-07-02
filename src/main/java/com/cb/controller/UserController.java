@@ -1,8 +1,10 @@
 package com.cb.controller;
 
 import com.cb.model.Cabang;
+import com.cb.model.Role;
 import com.cb.model.User;
 import com.cb.repository.CabangRepository;
+import com.cb.repository.RoleRepository;
 import com.cb.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +23,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 public class UserController {
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @GetMapping("/user/list")
     public ModelMap user(@PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model){
@@ -52,6 +58,10 @@ public class UserController {
             return "user/form";
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        Role role = roleRepository.findByName(user.getRoleName());
+        List<Role> roles =new ArrayList<>();
+        roles.add(role);
+        user.setRoles(roles);
         userRepository.save(user);
         status.setComplete();
         return "redirect:/user/list";

@@ -32,6 +32,17 @@
                             </label>
                         </div>
                         <div class="form-group">
+                            <label for="nama">Role</label>
+                            <select th:field="*{roleName}" class="form-control" id="role">
+                                <option value="">Pilih Role</option>
+                                <option value="ROLE_USER">Role User</option>
+                                <option value="ROLE_ADMIN">Role Admin</option>
+                            </select>
+                            <label class="control-label error-label"  th:if="${#fields.hasErrors('email')}"th:errors="*{email}">
+                                Pesan error nanti di sini
+                            </label>
+                        </div>
+                        <div class="form-group">
                             <label for="nama">Email</label>
                             <input type="text"
                                    th:field="*{email}"
@@ -42,7 +53,7 @@
                         </div>
                         <div class="form-group">
                             <label for="nama">Password</label>
-                            <input type="text"
+                            <input type="password"
                                    th:field="*{password}"
                                    name="password" class="form-control" id="password" placeholder="Password" />
                             <label class="control-label error-label"  th:if="${#fields.hasErrors('password')}"th:errors="*{password}">

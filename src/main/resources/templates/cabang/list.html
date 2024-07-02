@@ -47,8 +47,7 @@
                                 <th> No</th>
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="namaCabang">Nama Cabang</th>
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="alamat">Alamat</th>
-                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="email">Email</th>
-                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="password">Password</th>
+                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="email">User</th>
                                 <th>&nbsp;</th>
                             </tr>
                             </thead>
@@ -58,7 +57,6 @@
                                 <td th:text="${st.namaCabang}">Nama Cabang</td>
                                 <td th:text="${st.alamat}">Alamat</td>
                                 <td th:text="${st.email}">Email</td>
-                                <td th:text="${st.password}">Password</td>
                                 <td>
                                     <a href="#" class="btn btn-default" th:href="@{/cabang/form(id=${st.id})}"
                                        title="Edit Data"><span class="glyphicon glyphicon-edit"></span></a>

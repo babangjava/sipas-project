@@ -41,21 +41,12 @@
                             </label>
                         </div>
                         <div class="form-group">
-                            <label for="nama">Email</label>
+                            <label for="nama">User</label>
                             <select th:field="*{email}" class="form-control" id="email">
-                                <option value="">Pilih Email</option>
-                                <option th:each="user :${users}" th:value="${user.email}" th:text="${user.email}">1@gmail.com</option>
+                                <option value="">Pilih User</option>
+                                <option th:each="user :${users}" th:value="${user.email}" th:text="${user.email}">${user.email}</option>
                             </select>
                             <label class="control-label error-label"  th:if="${#fields.hasErrors('email')}"th:errors="*{email}">
-                                Pesan error nanti di sini
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label for="nama">Password</label>
-                            <input type="text"
-                                   th:field="*{password}"
-                                   name="password" class="form-control" id="password" placeholder="Password" />
-                            <label class="control-label error-label"  th:if="${#fields.hasErrors('password')}"th:errors="*{password}">
                                 Pesan error nanti di sini
                             </label>
                         </div>

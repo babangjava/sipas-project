@@ -31,8 +31,5 @@ public class Cabang {
     @Column(nullable = true)
     private String email;
 
-    @Column(nullable = true)
-    private String password;
-
 
 }
