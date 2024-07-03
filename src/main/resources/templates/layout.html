@@ -83,36 +83,6 @@
             <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                 <span class="sr-only">Toggle navigation</span>
             </a>
-            <!-- Navbar Right Menu -->
-            <div class="navbar-custom-menu">
-                <ul class="nav navbar-nav">
-                    <!-- User Account Menu -->
-                    <li class="dropdown user user-menu">
-                        <!-- Menu Toggle Button -->
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <span class="hidden-xs"><span sec:authentication="name">Setting</span>&nbsp;<i
-                                    class="fa fa-gears"></i></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <!-- The user image in the menu -->
-                            <li class="user-header">
-                                <p><span sec:authentication="name">Setting</span></p>
-                            </li>
-                            <!-- Menu Footer-->
-                            <li class="user-footer">
-                                <div class="row">
-                                    <div class="col-xs-6 text-center">
-                                        <a th:href="@{/editprofile}">Edit Profile</a>
-                                    </div>
-                                    <div class="col-xs-6 text-center">
-                                        <a th:href="@{/changepassword}">Change Password</a>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
         </nav>
     </header>
     <!-- Left side column. contains the logo and sidebar -->
