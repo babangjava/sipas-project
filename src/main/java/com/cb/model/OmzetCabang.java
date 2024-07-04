@@ -37,8 +37,8 @@ public class OmzetCabang {
     @Column(nullable = true)
     private String catatan;
 
-    @NotNull
-    @Column(nullable = false)
-    private Double total;
+//    @NotNull
+//    @Column(nullable = false)
+//    private Double total;
 
 }

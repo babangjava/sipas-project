@@ -44,7 +44,6 @@ public class TransaksiBahanBakuCabang {
     @Column(nullable = false)
     private String type;
 
-    @NotEmpty
     @NotNull
     @Column(nullable = false)
     private Integer qty;

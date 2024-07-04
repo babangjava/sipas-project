@@ -20,6 +20,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
+import java.time.LocalDate;
 
 @Controller
 public class TransaksiOmzetController {
@@ -46,6 +47,9 @@ public class TransaksiOmzetController {
         }
         String namaCabangByEmail = getNamaCabangByEmail(principal);
 
+        omzetCabang.setNamaCabang(namaCabangByEmail);
+        omzetCabang.setTglTransaksi(LocalDate.now());
+
         ModelMap modelMap = new ModelMap();
         modelMap.addAttribute("transaksiOmzet", omzetCabang);
         modelMap.addAttribute("namaCabang", namaCabangByEmail);
@@ -55,7 +59,7 @@ public class TransaksiOmzetController {
     @PostMapping("/transaksi/omzet/form")
     public String simpan(@Valid @ModelAttribute("transaksiOmzet") OmzetCabang omzetCabang , BindingResult errors, SessionStatus status) {
         if (errors.hasErrors()) {
-            return "cabang/form";
+            return "transaksi/omzet/form";
         }
         transaksiOmzetRepository.save(omzetCabang);
         status.setComplete();
@@ -87,6 +91,8 @@ public class TransaksiOmzetController {
         String namaCabang  = cabangRepository.findByEmail(email).getNamaCabang();
         return namaCabang;
     }
+
+
 }
 
 

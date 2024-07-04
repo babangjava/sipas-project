@@ -2,6 +2,38 @@
 <html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
 <head>
     <title>Cabang</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function updateFields() {
+            var namaBahan = $("#namaBahan").val();
+            if (namaBahan) {
+                $.ajax({
+                    url: '/api/bahan-baku/' + namaBahan,
+                    type: 'GET',
+                    success: function(data) {
+                        $("#harga").val(data.harga);
+                        $("#type").val(data.type);
+                    }
+                });
+            } else {
+                $("#harga").val('');
+                $("#type").val('');
+            }
+        }
+
+        $(document).ready(function() {
+            $("#namaBahan").change(updateFields);
+        });
+
+        $(document).ready(function() {
+            $('#qty').on('input', function() {
+                var qty = parseFloat($(this).val());
+                var harga = parseFloat($('#harga').val());
+                var total = qty * harga;
+                $('#total').val(total.toFixed(2));
+            });
+        });
+    </script>
 </head>
 <body>
 <div layout:fragment="content">
@@ -13,47 +45,98 @@
                 </div>
                 <!-- /.box-header -->
                 <!-- form start -->
-                <form role="form" th:object="${cabang}" method="post">
+                <form role="form" th:object="${transaksiCabang}" method="post">
                     <div class="box-body">
                         <div class="form-group">
-                            <label for="nama">Nama Cabang</label>
+                            <label for="namaCabang">Nama Cabang</label>
                             <input type="text"
                                    th:field="*{namaCabang}"
-                                   name="nama" class="form-control" id="namaCabang" placeholder="Nama Cabang" />
+                                   name="nama" class="form-control" id="namaCabang" placeholder="Nama Cabang" readonly />
                             <label class="control-label error-label" th:if="${#fields.hasErrors('namaCabang')}" th:errors="*{namaCabang}">
                                 Pesan error nanti di sini
                             </label>
                         </div>
                         <div class="form-group">
-                            <label for="nama">Alamat</label>
+                            <label for="tglTransaksi">Tanggal Transaksi</label>
                             <input type="text"
-                                   th:field="*{alamat}"
-                                   name="alamat" class="form-control" id="alamat" placeholder="Alamat" />
-                            <label class="control-label error-label"  th:if="${#fields.hasErrors('alamat')}"th:errors="*{alamat}">
+                                   th:field="*{tglTransaksi}"
+                                   name="tglTransaksi" class="form-control" id="tglTransaksi" th:value="${transaksiCabang.tglTransaksi}" readonly/>
+                            <label class="control-label error-label"  th:if="${#fields.hasErrors('tglTransaksi')}"th:errors="*{tglTransaksi}">
                                 Pesan error nanti di sini
                             </label>
                         </div>
+                        <!-- fragment_form.html -->
                         <div class="form-group">
-                            <label for="nama">Email</label>
-                            <select th:field="*{email}" class="form-control" id="email">
-                                <option value="">Pilih Email</option>
-                                <option th:each="user :${users}" th:value="${user.email}" th:text="${user.email}">1@gmail.com</option>
+                            <label for="namaBahan">Nama Bahan</label>
+                            <select th:field="*{namaBahan}" class="form-control" id="namaBahan">
+                                <option value="">Pilih Nama Bahan</option>
+                                <option th:each="bahan : ${bahanBakuList}" th:value="${bahan.namaBahan}" th:text="${bahan.namaBahan}"></option>
                             </select>
-                            <label class="control-label error-label"  th:if="${#fields.hasErrors('email')}"th:errors="*{email}">
+                            <label class="control-label error-label" th:if="${#fields.hasErrors('namaBahan')}" th:errors="*{namaBahan}">
                                 Pesan error nanti di sini
                             </label>
                         </div>
                         <div class="form-group">
-                            <label for="nama">Password</label>
+                            <label for="harga">Harga</label>
                             <input type="text"
-                                   th:field="*{password}"
-                                   name="password" class="form-control" id="password" placeholder="Password" />
-                            <label class="control-label error-label"  th:if="${#fields.hasErrors('password')}"th:errors="*{password}">
+                                   th:field="*{harga}"
+                                   name="harga" class="form-control" id="harga" placeholder="Harga" />
+                            <label class="control-label error-label" th:if="${#fields.hasErrors('harga')}" th:errors="*{harga}">
+                                Pesan error nanti di sini
+                            </label>
+                        </div>
+<!--                        <div class="form-group">-->
+<!--                            <label for="type">Type</label>-->
+<!--                            <input type="text"-->
+<!--                                   th:field="*{type}"-->
+<!--                                   name="type" class="form-control" id="type" placeholder="Type" />-->
+<!--                            <label class="control-label error-label" th:if="${#fields.hasErrors('type')}" th:errors="*{type}">-->
+<!--                                Pesan error nanti di sini-->
+<!--                            </label>-->
+<!--                        </div>-->
+
+                        <div class="form-group">
+                            <label for="qty">Quantity</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="input-group mb-3">
+                                        <input type="text"
+                                               th:field="*{qty}"
+                                               name="qty" class="form-control" id="qty" placeholder="qty" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-group mb-3">
+                                        <input type="text"
+                                               th:field="*{type}"
+                                               name="type" class="form-control no-border" id="type"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <label class="control-label error-label"  th:if="${#fields.hasErrors('qty')}"th:errors="*{qty}">
                                 Pesan error nanti di sini
                             </label>
                         </div>
                         <div class="form-group">
-                            <a th:href="@{/cabang/list}" class="btn btn-default" role="button" title="Back list">
+                            <label for="total">Total</label>
+                            <input type="text"
+                                   th:field="*{total}"
+                            name="total" class="form-control" id="total" placeholder="Total" />
+                            <label class="control-label error-label"  th:if="${#fields.hasErrors('total')}"th:errors="*{total}">
+                                Pesan error nanti di sini
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="catatan">Catatan</label>
+                            <input type="text"
+                                   th:field="*{catatan}"
+                                   name="catatan" class="form-control" id="catatan" placeholder="catatan" />
+                            <label class="control-label error-label"  th:if="${#fields.hasErrors('catatan')}"th:errors="*{catatan}">
+                                Pesan error nanti di sini
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <a th:href="@{/transaksi/cabang/list}" class="btn btn-default" role="button" title="Back list">
                                 <span aria-hidden="true"></span>Batal
                             </a>
                             <button type="submit" class="box-title btn btn-primary" title="Save Data">Simpan</button>
@@ -64,5 +147,39 @@
         </div>
     </div>
 </div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function() {
+        var bahanBakuList = /*[[${bahanBakuList}]]*/ []; // Make sure Thymeleaf is correctly injecting the list here
+        console.log('Bahan Baku List:', bahanBakuList); // Log the list to check its content
+
+        var namaBahanDropdown = document.getElementById('namaBahan');
+        var hargaInput = document.getElementById('harga');
+        var typeInput = document.getElementById('type');
+
+        // Event listener for changes in the dropdown for nama bahan
+        namaBahanDropdown.addEventListener('change', function() {
+            var selectedNamaBahan = this.value;
+
+            // Find the selected bahan from the bahanBakuList
+            var selectedBahan = bahanBakuList.find(function(bahan) {
+                return bahan.namaBahan === selectedNamaBahan;
+            });
+
+            // If bahan is found, populate harga and type
+            if (selectedBahan) {
+                hargaInput.value = selectedBahan.harga;
+                typeInput.value = selectedBahan.type;
+            } else {
+                hargaInput.value = '';
+                typeInput.value = '';
+            }
+        });
+    });
+
+    /*]]>*/
+</script>
+
 </body>
 </html>

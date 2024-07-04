@@ -1,6 +1,8 @@
 package com.cb.controller;
 
+import com.cb.model.BahanBaku;
 import com.cb.model.TransaksiBahanBakuCabang;
+import com.cb.repository.BahanBakuRepository;
 import com.cb.repository.CabangRepository;
 import com.cb.repository.TransaksiCabangRepository;
 import jakarta.validation.Valid;
@@ -12,14 +14,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class TransaksiCabangController {
@@ -27,6 +29,8 @@ public class TransaksiCabangController {
     private TransaksiCabangRepository transaksiCabangRepository;
     @Autowired
     private CabangRepository cabangRepository;
+    @Autowired
+    private BahanBakuRepository bahanBakuRepository;
 
     @GetMapping("/transaksi/cabang/list")
     public ModelMap cabang(Principal principal, @PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model){
@@ -40,15 +44,20 @@ public class TransaksiCabangController {
     }
 
     @GetMapping("/transaksi/cabang/form")
-    public ModelMap tampilkanForm(Principal principal, @RequestParam(value = "id", required = false) TransaksiBahanBakuCabang transaksiBahanBakuCabang ) {
+    public ModelMap tampilkanForm(Principal principal, @RequestParam(value = "id", required = false) TransaksiBahanBakuCabang transaksiBahanBakuCabang , Model model) {
         if (transaksiBahanBakuCabang == null) {
             transaksiBahanBakuCabang = new TransaksiBahanBakuCabang();
         }
         String namaCabangByEmail = getNamaCabangByEmail(principal);
 
+        transaksiBahanBakuCabang.setNamaCabang(namaCabangByEmail);
+        transaksiBahanBakuCabang.setTglTransaksi(LocalDate.now());
+        Iterable<BahanBaku> allBahanBaku = bahanBakuRepository.findAll();
+
         ModelMap modelMap = new ModelMap();
         modelMap.addAttribute("transaksiCabang", transaksiBahanBakuCabang);
         modelMap.addAttribute("namaCabang", namaCabangByEmail);
+        model.addAttribute("bahanBakuList", allBahanBaku);
         return modelMap;
     }
 
@@ -80,6 +89,12 @@ public class TransaksiCabangController {
         }
         status.setComplete();
         return "redirect:/transaksi/cabang/list";
+    }
+
+    @GetMapping("/api/bahan-baku/{namaBahan}")
+    @ResponseBody
+    public Optional<BahanBaku> getBahanBakuByNama(@PathVariable String namaBahan) {
+        return bahanBakuRepository.findByNamaBahan(namaBahan);
     }
 
     private String getNamaCabangByEmail(Principal principal) {
