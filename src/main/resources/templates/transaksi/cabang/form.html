@@ -88,18 +88,9 @@
                                 Pesan error nanti di sini
                             </label>
                         </div>
-<!--                        <div class="form-group">-->
-<!--                            <label for="type">Type</label>-->
-<!--                            <input type="text"-->
-<!--                                   th:field="*{type}"-->
-<!--                                   name="type" class="form-control" id="type" placeholder="Type" />-->
-<!--                            <label class="control-label error-label" th:if="${#fields.hasErrors('type')}" th:errors="*{type}">-->
-<!--                                Pesan error nanti di sini-->
-<!--                            </label>-->
-<!--                        </div>-->
 
                         <div class="form-group">
-                            <label for="qty">Quantity</label>
+                            <label for="qty">Qty</label>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="input-group mb-3">
@@ -120,15 +111,12 @@
                                 Pesan error nanti di sini
                             </label>
                         </div>
-                        <div class="form-group">
-                            <label for="total">Total</label>
-                            <input type="text"
-                                   th:field="*{total}"
-                            name="total" class="form-control" id="total" placeholder="Total" />
-                            <label class="control-label error-label"  th:if="${#fields.hasErrors('total')}"th:errors="*{total}">
-                                Pesan error nanti di sini
-                            </label>
-                        </div>
+                        <input type="hidden"
+                               th:field="*{total}"
+                               name="total" class="form-control" id="total" placeholder="Total" />
+                        <label class="control-label error-label"  th:if="${#fields.hasErrors('total')}"th:errors="*{total}">
+                            Pesan error nanti di sini
+                        </label>
                         <div class="form-group">
                             <label for="catatan">Catatan</label>
                             <input type="text"
