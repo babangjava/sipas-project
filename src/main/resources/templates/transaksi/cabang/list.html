@@ -29,7 +29,6 @@
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="tglTransaksi">Tgl Transaksi</th>
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="namaBahan">Nama Bahan</th>
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="qty">Jumlah</th>
-                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="total">Total</th>
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="catatan">Catatan</th>
                                 <th>&nbsp;</th>
                             </tr>
@@ -41,7 +40,6 @@
                                 <td th:text="${st.tglTransaksi}">Tgl Transaksi</td>
                                 <td th:text="${st.namaBahan}">Nama Bahan</td>
                                 <td th:text="${st.qty}+' '+${st.type}" >qty</td>
-                                <td th:text="${st.total}" >qty</td>
                                 <td th:text="${st.catatan}">Catatan</td>
                                 <td>
                                     <a href="#" class="btn btn-default" th:href="@{/transaksi/cabang/form(id=${st.id})}"
