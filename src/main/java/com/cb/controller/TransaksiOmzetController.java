@@ -44,12 +44,10 @@ public class TransaksiOmzetController {
     public ModelMap tampilkanForm(Principal principal, @RequestParam(value = "id", required = false) OmzetCabang omzetCabang ) {
         if (omzetCabang == null) {
             omzetCabang = new OmzetCabang();
+            omzetCabang.setTglTransaksi(LocalDate.now());
         }
         String namaCabangByEmail = getNamaCabangByEmail(principal);
-
         omzetCabang.setNamaCabang(namaCabangByEmail);
-        omzetCabang.setTglTransaksi(LocalDate.now());
-
         ModelMap modelMap = new ModelMap();
         modelMap.addAttribute("transaksiOmzet", omzetCabang);
         modelMap.addAttribute("namaCabang", namaCabangByEmail);

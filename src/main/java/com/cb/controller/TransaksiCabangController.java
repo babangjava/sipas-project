@@ -47,11 +47,10 @@ public class TransaksiCabangController {
     public ModelMap tampilkanForm(Principal principal, @RequestParam(value = "id", required = false) TransaksiBahanBakuCabang transaksiBahanBakuCabang , Model model) {
         if (transaksiBahanBakuCabang == null) {
             transaksiBahanBakuCabang = new TransaksiBahanBakuCabang();
+            transaksiBahanBakuCabang.setTglTransaksi(LocalDate.now());
         }
         String namaCabangByEmail = getNamaCabangByEmail(principal);
-
         transaksiBahanBakuCabang.setNamaCabang(namaCabangByEmail);
-        transaksiBahanBakuCabang.setTglTransaksi(LocalDate.now());
         Iterable<BahanBaku> allBahanBaku = bahanBakuRepository.findAll();
 
         ModelMap modelMap = new ModelMap();
@@ -64,8 +63,9 @@ public class TransaksiCabangController {
     @PostMapping("/transaksi/cabang/form")
     public String simpan(@Valid @ModelAttribute("transaksiCabang") TransaksiBahanBakuCabang transaksiBahanBakuCabang , BindingResult errors, SessionStatus status) {
         if (errors.hasErrors()) {
-            return "cabang/form";
+            return "transaksi/cabang/form";
         }
+        transaksiBahanBakuCabang.setTotal(transaksiBahanBakuCabang.getHarga()*transaksiBahanBakuCabang.getQty());
         transaksiCabangRepository.save(transaksiBahanBakuCabang);
         status.setComplete();
         return "redirect:/transaksi/cabang/list";

@@ -48,7 +48,6 @@ public class TransaksiBahanBakuCabang {
     @Column(nullable = false)
     private Integer qty;
 
-    @NotNull
     @Column(nullable = false)
     private Double total;
 
