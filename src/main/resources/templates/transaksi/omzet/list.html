@@ -37,7 +37,7 @@
                                 <td th:text="${iter.count}">1</td>
                                 <td th:text="${st.namaCabang}">Nama Cabang</td>
                                 <td th:text="${st.tglTransaksi}">Tgl Transaksi</td>
-                                <td th:text="${#numbers.formatDecimal(st.omzet,0,'COMMA', 2, 'POINT')}">Omzet</td>
+                                <td th:text="${#numbers.formatDecimal(st.omzet,0,'COMMA', 0, 'POINT')}">Omzet</td>
                                 <td th:text="${st.catatan}">Catatan</td>
                                 <td>
                                     <a href="#" class="btn btn-default" th:href="@{/transaksi/omzet/form(id=${st.id})}"

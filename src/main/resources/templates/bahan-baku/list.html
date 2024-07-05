@@ -52,7 +52,7 @@
                                 <td th:text="${iter.count}">1</td>
                                 <td th:text="${st.namaBahan}">Nama Bahan Baku</td>
                                 <td th:text="${st.type}">Type</td>
-                                <td th:text="${#numbers.formatDecimal(st.harga,0,'COMMA', 2, 'POINT')}">Harga</td>
+                                <td th:text="${#numbers.formatDecimal(st.harga,0,'COMMA', 0, 'POINT')}">Harga</td>
                                 <td>
                                     <a href="#" class="btn btn-default" th:href="@{/bahan-baku/form(id=${st.id})}"
                                        title="Edit Data"><span class="glyphicon glyphicon-edit"></span></a>

@@ -2,38 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
 <head>
     <title>Bahan Baku</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        function updateFields() {
-            var namaBahan = $("#namaBahan").val();
-            if (namaBahan) {
-                $.ajax({
-                    url: '/api/bahan-baku/' + namaBahan,
-                    type: 'GET',
-                    success: function(data) {
-                        $("#harga").val(data.harga);
-                        $("#type").val(data.type);
-                    }
-                });
-            } else {
-                $("#harga").val('');
-                $("#type").val('');
-            }
-        }
-
-        $(document).ready(function() {
-            $("#namaBahan").change(updateFields);
-        });
-
-        $(document).ready(function() {
-            $('#qty').on('input', function() {
-                var qty = parseFloat($(this).val());
-                var harga = parseFloat($('#harga').val());
-                var total = qty * harga;
-                $('#total').val(total.toFixed(2));
-            });
-        });
-    </script>
 </head>
 <body>
 <div layout:fragment="breadcrumb">
@@ -71,7 +39,7 @@
                         <!-- fragment_form.html -->
                         <div class="form-group">
                             <label for="namaBahan">Nama Bahan</label>
-                            <select th:field="*{namaBahan}" class="form-control" id="namaBahan">
+                            <select th:field="*{namaBahan}" class="form-control" id="namaBahan" onchange="getDataBarang(this)">
                                 <option value="">Pilih Nama Bahan</option>
                                 <option th:each="bahan : ${bahanBakuList}" th:value="${bahan.namaBahan}" th:text="${bahan.namaBahan}"></option>
                             </select>
@@ -79,16 +47,12 @@
                                 Pesan error nanti di sini
                             </label>
                         </div>
-                        <div class="form-group">
-                            <label for="harga">Harga</label>
-                            <input type="text"
-                                   th:field="*{harga}"
-                                   name="harga" class="form-control" id="harga" placeholder="Harga" />
-                            <label class="control-label error-label" th:if="${#fields.hasErrors('harga')}" th:errors="*{harga}">
-                                Pesan error nanti di sini
-                            </label>
-                        </div>
-
+                        <input type="hidden"
+                               th:field="*{harga}"
+                               name="harga" class="form-control" id="harga" placeholder="Harga" />
+                        <input type="hidden"
+                               th:field="*{total}"
+                               name="total" class="form-control" id="total" placeholder="Total" />
                         <div class="form-group">
                             <label for="qty">Qty</label>
                             <div class="row">
@@ -111,12 +75,6 @@
                                 Pesan error nanti di sini
                             </label>
                         </div>
-                        <input type="hidden"
-                               th:field="*{total}"
-                               name="total" class="form-control" id="total" placeholder="Total" />
-                        <label class="control-label error-label"  th:if="${#fields.hasErrors('total')}"th:errors="*{total}">
-                            Pesan error nanti di sini
-                        </label>
                         <div class="form-group">
                             <label for="catatan">Catatan</label>
                             <input type="text"
@@ -137,40 +95,24 @@
             </div>
         </div>
     </div>
-</div>
-
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    document.addEventListener('DOMContentLoaded', function() {
-        var bahanBakuList = /*[[${bahanBakuList}]]*/ []; // Make sure Thymeleaf is correctly injecting the list here
-        console.log('Bahan Baku List:', bahanBakuList); // Log the list to check its content
-
-        var namaBahanDropdown = document.getElementById('namaBahan');
-        var hargaInput = document.getElementById('harga');
-        var typeInput = document.getElementById('type');
-
-        // Event listener for changes in the dropdown for nama bahan
-        namaBahanDropdown.addEventListener('change', function() {
-            var selectedNamaBahan = this.value;
-
-            // Find the selected bahan from the bahanBakuList
-            var selectedBahan = bahanBakuList.find(function(bahan) {
-                return bahan.namaBahan === selectedNamaBahan;
-            });
-
-            // If bahan is found, populate harga and type
-            if (selectedBahan) {
-                hargaInput.value = selectedBahan.harga;
-                typeInput.value = selectedBahan.type;
+    <script type="text/javascript">
+        function getDataBarang(obj) {
+            var namaBahan = $("#namaBahan").val();
+            if (namaBahan) {
+                $.ajax({
+                    url: '/api/bahan-baku/' + namaBahan,
+                    type: 'GET',
+                    success: function(data) {
+                        $("#harga").val(data.harga);
+                        $("#type").val(data.type);
+                    }
+                });
             } else {
-                hargaInput.value = '';
-                typeInput.value = '';
+                $("#harga").val('');
+                $("#type").val('');
             }
-        });
-    });
-
-    /*]]>*/
-</script>
-
+        }
+	</script>
+</div>
 </body>
 </html>
