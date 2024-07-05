@@ -1,7 +1,7 @@
 <!--/* Thymeleaf templating engine, Each token will be replaced by their respective titles in the resulting page. */-->
 <html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
 <head>
-    <title>Cabang</title>
+    <title>Bahan Baku</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function updateFields() {
@@ -36,6 +36,9 @@
     </script>
 </head>
 <body>
+<div layout:fragment="breadcrumb">
+    <h1>Bahan Baku</h1>
+</div>
 <div layout:fragment="content">
     <div class="row">
         <div class="col-md-6">
