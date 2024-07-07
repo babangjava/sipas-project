@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TransaksiCabangRepository extends CrudRepository<TransaksiBahanBakuCabang, Long>, PagingAndSortingRepository<TransaksiBahanBakuCabang, Long> {
-    Page<TransaksiBahanBakuCabang> findByNamaCabangContainingIgnoreCase(String name, Pageable pageable);
+    Page<TransaksiBahanBakuCabang> findByNamaCabangContainingIgnoreCaseOrderByTglTransaksiDesc(String name, Pageable pageable);
 }
