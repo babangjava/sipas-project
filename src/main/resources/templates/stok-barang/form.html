@@ -29,6 +29,15 @@
                             </label>
                         </div>
                         <div class="form-group">
+                            <label for="tglTransaksi">Tanggal Transaksi</label>
+                            <input type="text"
+                                   th:field="*{tglTransaksi}"
+                                   name="tglTransaksi" class="form-control" id="tglTransaksi" th:value="${stokBarang.tglTransaksi}" readonly/>
+                            <label class="control-label error-label"  th:if="${#fields.hasErrors('tglTransaksi')}"th:errors="*{tglTransaksi}">
+                                Pesan error nanti di sini
+                            </label>
+                        </div>
+                        <div class="form-group">
                             <label for="namaBahan">Nama Bahan Baku</label>
                             <select th:field="*{namaBahan}" name="namaBahan" class="form-control" id="namaBahan"  onchange="getDataBarang(this)">
                                 <option value="">Pilih Nama Bahan</option>
@@ -67,15 +76,6 @@
                                 </div>
                             </div>
                             <label class="control-label error-label"  th:if="${#fields.hasErrors('qty')}"th:errors="*{qty}">
-                                Pesan error nanti di sini
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label for="nama">Stok</label>
-                            <input type="text"
-                                   th:field="*{stok}"
-                                   name="keterangan" class="form-control" id="stok" placeholder="stok" />
-                            <label class="control-label error-label"  th:if="${#fields.hasErrors('stok')}"th:errors="*{stok}">
                                 Pesan error nanti di sini
                             </label>
                         </div>
