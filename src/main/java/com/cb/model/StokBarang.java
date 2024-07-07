@@ -7,6 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
+
+import static jakarta.persistence.TemporalType.DATE;
 
 @Getter
 @Setter
@@ -24,6 +29,11 @@ public class StokBarang {
     @NotNull
     @Column(nullable = false)
     private String namaGudang;
+
+    @Column
+    @Temporal(DATE)
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private LocalDate tglTransaksi;
 
     @NotEmpty
     @NotNull

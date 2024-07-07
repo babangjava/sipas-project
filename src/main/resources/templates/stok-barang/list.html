@@ -27,6 +27,7 @@
                             <tr>
                                 <th> No</th>
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="namaGudang">Nama Gudang</th>
+                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="tglTransaksi">Tgl Transaksi</th>
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="namaBahan">Nama Bahan Baku</th>
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="Type">Type</th>
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="harga">Harga</th>
@@ -39,6 +40,7 @@
                             <tr th:each="st,iter : ${stokBarang}">
                                 <td th:text="${iter.count}">1</td>
                                 <td th:text="${st.namaGudang}">Nama Gudang</td>
+                                <td th:text="${st.tglTransaksi}">Tgl Transaksi</td>
                                 <td th:text="${st.namaBahan}">Nama Bahan Baku</td>
                                 <td th:text="${st.type}">Type</td>
                                 <td th:text="${#numbers.formatDecimal(st.harga,0,'COMMA', 0, 'POINT')}">Harga</td>
