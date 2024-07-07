@@ -33,10 +33,10 @@ public class TransaksiOmzetController {
     public ModelMap cabang(Principal principal, @PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model){
         if (value != null) {
             model.addAttribute("key", value);
-            return new ModelMap().addAttribute("transaksiOmzet", transaksiOmzetRepository.findByNamaCabangContainingIgnoreCase(value, pageable));
+            return new ModelMap().addAttribute("transaksiOmzet", transaksiOmzetRepository.findByNamaCabangContainingIgnoreCaseOrderByTglTransaksiDesc(value, pageable));
         } else {
             String namaCabangByEmail = getNamaCabangByEmail(principal);
-            return new ModelMap().addAttribute("transaksiOmzet", transaksiOmzetRepository.findByNamaCabangContainingIgnoreCase(namaCabangByEmail,pageable));
+            return new ModelMap().addAttribute("transaksiOmzet", transaksiOmzetRepository.findByNamaCabangContainingIgnoreCaseOrderByTglTransaksiDesc(namaCabangByEmail,pageable));
         }
     }
 

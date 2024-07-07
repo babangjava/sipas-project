@@ -39,7 +39,7 @@ public class UserController {
     public ModelMap user(@PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model){
         if (value != null) {
             model.addAttribute("key", value);
-            return new ModelMap().addAttribute("user", userRepository.findByEmail(value));
+            return new ModelMap().addAttribute("user", userRepository.findByNameContainingIgnoreCase(value, pageable));
         } else {
             return new ModelMap().addAttribute("user", userRepository.findAll(pageable));
         }
