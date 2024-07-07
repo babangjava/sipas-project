@@ -36,6 +36,16 @@
                                 Pesan error nanti di sini
                             </label>
                         </div>
+                        <div class="form-group">
+                            <label for="namaGudang">Nama Gudang</label>
+                            <select th:field="*{namaGudang}" class="form-control" id="namaGudang" onchange="getDataBarang(this)">
+                                <option value="">Pilih Nama Gudang</option>
+                                <option th:each="bahan : ${gudangList}" th:value="${bahan.namaGudang}" th:text="${bahan.namaGudang}"></option>
+                            </select>
+                            <label class="control-label error-label" th:if="${#fields.hasErrors('namaGudang')}" th:errors="*{namaGudang}">
+                                Pesan error nanti di sini
+                            </label>
+                        </div>
                         <!-- fragment_form.html -->
                         <div class="form-group">
                             <label for="namaBahan">Nama Bahan</label>

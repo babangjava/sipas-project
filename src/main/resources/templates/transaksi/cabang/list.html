@@ -27,10 +27,10 @@
                                 <th> No</th>
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="namaCabang">Nama Cabang</th>
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="tglTransaksi">Tgl Transaksi</th>
+                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="namaGudang">Nama Gudang</th>
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="namaBahan">Nama Bahan</th>
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="qty">Jumlah</th>
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="catatan">Catatan</th>
-                                <th>&nbsp;</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -38,13 +38,10 @@
                                 <td th:text="${iter.count}">1</td>
                                 <td th:text="${st.namaCabang}">Nama Cabang</td>
                                 <td th:text="${st.tglTransaksi}">Tgl Transaksi</td>
+                                <td th:text="${st.namaGudang}">Nama Gudang</td>
                                 <td th:text="${st.namaBahan}">Nama Bahan</td>
                                 <td th:text="${st.qty}+' '+${st.type}" >qty</td>
                                 <td th:text="${st.catatan}">Catatan</td>
-                                <td>
-                                    <a href="#" class="btn btn-default" th:href="@{/transaksi/cabang/delete(id=${st.id})}"
-                                       title="Delete Data"><span class="glyphicon glyphicon-trash"></span></a>
-                                </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(transaksiCabang.content)}">
                                 <td colspan="13" class="text-center">Data Cabang tidak ditemukan</td>

@@ -40,6 +40,11 @@ public class TransaksiBahanBakuCabang {
     @Column(nullable = false)
     private String namaBahan;
 
+    @NotEmpty
+    @NotNull
+    @Column(nullable = false)
+    private String namaGudang;
+
     @NotNull
     @Column(nullable = false)
     private Double harga;

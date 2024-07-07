@@ -29,7 +29,6 @@
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="tglTransaksi">Tgl Transaksi</th>
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="omzet">Omzet</th>
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="catatan">Catatan</th>
-                                <th>&nbsp;</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -39,10 +38,6 @@
                                 <td th:text="${st.tglTransaksi}">Tgl Transaksi</td>
                                 <td th:text="${#numbers.formatDecimal(st.omzet,0,'COMMA', 0, 'POINT')}">Omzet</td>
                                 <td th:text="${st.catatan}">Catatan</td>
-                                <td>
-                                    <a href="#" class="btn btn-default" th:href="@{/transaksi/omzet/delete(id=${st.id})}"
-                                       title="Delete Data"><span class="glyphicon glyphicon-trash"></span></a>
-                                </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(transaksiOmzet.content)}">
                                 <td colspan="13" class="text-center">Data Cabang tidak ditemukan</td>

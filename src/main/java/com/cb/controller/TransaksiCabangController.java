@@ -1,9 +1,11 @@
 package com.cb.controller;
 
 import com.cb.model.BahanBaku;
+import com.cb.model.Gudang;
 import com.cb.model.TransaksiBahanBakuCabang;
 import com.cb.repository.BahanBakuRepository;
 import com.cb.repository.CabangRepository;
+import com.cb.repository.GudangRepository;
 import com.cb.repository.TransaksiCabangRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,8 @@ public class TransaksiCabangController {
     private CabangRepository cabangRepository;
     @Autowired
     private BahanBakuRepository bahanBakuRepository;
+    @Autowired
+    private GudangRepository gudangRepository;
 
     @GetMapping("/transaksi/cabang/list")
     public ModelMap cabang(Principal principal, @PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model){
@@ -51,11 +55,13 @@ public class TransaksiCabangController {
         String namaCabangByEmail = getNamaCabangByEmail(principal);
         transaksiBahanBakuCabang.setNamaCabang(namaCabangByEmail);
         Iterable<BahanBaku> allBahanBaku = bahanBakuRepository.findAll();
+        Iterable<Gudang> allGudang = gudangRepository.findAll();
 
         ModelMap modelMap = new ModelMap();
         modelMap.addAttribute("transaksiCabang", transaksiBahanBakuCabang);
         modelMap.addAttribute("namaCabang", namaCabangByEmail);
         model.addAttribute("bahanBakuList", allBahanBaku);
+        model.addAttribute("gudangList", allGudang);
         return modelMap;
     }
 
