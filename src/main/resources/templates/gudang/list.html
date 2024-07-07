@@ -1,19 +1,19 @@
 <!--/* Thymeleaf templating engine, Each token will be replaced by their respective titles in the resulting page. */-->
-<html xmlns:th="http://thymeleaf.org" xmlns:sd="http://www.w3.org/1999/xhtml"
-      xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
+<html xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:sd="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
 <head>
-    <title>Bahan Baku</title>
+    <title>Gudang</title>
 </head>
 <body>
 <div layout:fragment="breadcrumb">
-    <h1>Bahan Baku</h1>
+    <h1>Gudang</h1>
 </div>
 <div layout:fragment="content">
     <div class="row">
         <div class="col-xs-12">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <a class="box-title btn btn-primary" th:href="@{/bahan-baku/form}">Tambah Bahan Baku</a>
+                    <a class="box-title btn btn-primary" th:href="@{/gudang/form}">Tambah Gudang</a>
                 </div>
 
 
@@ -26,27 +26,26 @@
                             <thead>
                             <tr>
                                 <th> No</th>
-                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="namaBahan">Nama Bahan Baku</th>
-                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="Type">Type</th>
-                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="harga">Harga</th>
+                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="namaGudang">Nama gudang</th>
+                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="alamat">Alamat</th>
+                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="email">User</th>
                                 <th>&nbsp;</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="st,iter : ${bahanBaku}">
+                            <tr th:each="st,iter : ${gudang}">
                                 <td th:text="${iter.count}">1</td>
-                                <td th:text="${st.namaBahan}">Nama Bahan Baku</td>
-                                <td th:text="${st.type}">Type</td>
-                                <td th:text="${#numbers.formatDecimal(st.harga,0,'COMMA', 0, 'POINT')}">Harga</td>
+                                <td th:text="${st.namaGudang}">Nama Gudang</td>
+                                <td th:text="${st.alamat}">Alamat</td>
                                 <td>
-                                    <a href="#" class="btn btn-default" th:href="@{/bahan-baku/form(id=${st.id})}"
+                                    <a href="#" class="btn btn-default" th:href="@{/gudang/form(id=${st.id})}"
                                        title="Edit Data"><span class="glyphicon glyphicon-edit"></span></a>
-                                    <a href="#" class="btn btn-default" th:href="@{/bahan-baku/delete(id=${st.id})}"
+                                    <a href="#" class="btn btn-default" th:href="@{/gudang/delete(id=${st.id})}"
                                        title="Delete Data"><span class="glyphicon glyphicon-trash"></span></a>
                                 </td>
                             </tr>
-                            <tr th:if="${#lists.isEmpty(bahanBaku.content)}">
-                                <td colspan="13" class="text-center">Data Bahan Baku tidak ditemukan</td>
+                            <tr th:if="${#lists.isEmpty(gudang.content)}">
+                                <td colspan="13" class="text-center">Data Gudang tidak ditemukan</td>
                             </tr>
                             </tbody>
                         </table>
@@ -54,7 +53,7 @@
                 </div>
 
 
-                <div th:if="${not #lists.isEmpty(bahanBaku.content)}">
+                <div th:if="${not #lists.isEmpty(gudang.content)}">
 
                     <div sd:pagination-summary="">info</div>
                     <div class="text-center">

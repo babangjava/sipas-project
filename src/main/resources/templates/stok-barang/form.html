@@ -1,0 +1,114 @@
+<!--/* Thymeleaf templating engine, Each token will be replaced by their respective titles in the resulting page. */-->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
+<head>
+    <title>Stok Barang</title>
+</head>
+<body>
+<div layout:fragment="breadcrumb">
+    <h1>Stok Barang</h1>
+</div>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">&nbsp;</h3>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                <form role="form" th:object="${stokBarang}" method="post">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="namaGudang">Nama Gudang</label>
+                            <select th:field="*{namaGudang}" name="namaGudang" class="form-control" id="namaGudang">
+                                <option value="">Pilih Gudang</option>
+                                <option th:each="gudang : ${listGudang}" th:value="${gudang.namaGudang}" th:text="${gudang.namaGudang}"></option>
+                            </select>
+                            <label class="control-label error-label" th:if="${#fields.hasErrors('namaGudang')}" th:errors="*{namaGudang}">
+                                Pesan error nanti di sini
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="namaBahan">Nama Bahan Baku</label>
+                            <select th:field="*{namaBahan}" name="namaBahan" class="form-control" id="namaBahan"  onchange="getDataBarang(this)">
+                                <option value="">Pilih Nama Bahan</option>
+                                <option th:each="bahan : ${listBahan}" th:value="${bahan.namaBahan}" th:text="${bahan.namaBahan}"></option>
+                            </select>
+                            <label class="control-label error-label" th:if="${#fields.hasErrors('namaBahan')}" th:errors="*{namaBahan}">
+                                Pesan error nanti di sini
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="harga">Harga</label>
+                            <input type="text"
+                                   th:field="*{harga}"
+                                   name="harga" class="form-control" id="harga" placeholder="Harga" readonly />
+                            <label class="control-label error-label" th:if="${#fields.hasErrors('harga')}" th:errors="*{harga}">
+                                Pesan error nanti di sini
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="nama">Jumlah</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="input-group mb-3">
+                                        <input type="text"
+                                               th:field="*{qty}"
+                                               name="qty" class="form-control" id="qty" placeholder="qty" />
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6" style="position:absolute; left:180px;">
+                                    <div class="input-group mb-3">
+                                        <input type="text"
+                                               th:field="*{type}"
+                                               name="type" class="form-control no-border" id="type" readonly/>
+                                    </div>
+                                </div>
+                            </div>
+                            <label class="control-label error-label"  th:if="${#fields.hasErrors('qty')}"th:errors="*{qty}">
+                                Pesan error nanti di sini
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="nama">Stok</label>
+                            <input type="text"
+                                   th:field="*{stok}"
+                                   name="keterangan" class="form-control" id="stok" placeholder="stok" />
+                            <label class="control-label error-label"  th:if="${#fields.hasErrors('stok')}"th:errors="*{stok}">
+                                Pesan error nanti di sini
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <a th:href="@{/bahan-baku/list}" class="btn btn-default" role="button" title="Back list">
+                                <span aria-hidden="true"></span>Batal
+                            </a>
+                            <button type="submit" class="box-title btn btn-primary" title="Save Data">Simpan</button>
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+                        function getDataBarang(obj) {
+                            var namaBahan = $("#namaBahan").val();
+                            if (namaBahan) {
+                                $.ajax({
+                                    url: '/data/bahan-baku/' + namaBahan,
+                                    type: 'GET',
+                                    success: function(data) {
+                                        $("#type").val(data.type);
+                                        $("#harga").val(data.harga);
+                                    }
+                                });
+                            } else {
+                                $("#type").val('');
+                                $("#harga").val('');
+                            }
+                        }
+                    </script>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

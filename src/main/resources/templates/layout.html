@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -109,7 +109,18 @@
                         <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/user/list}">User</a></li>
                         <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/cabang/list}">Cabang</a></li>
                         <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/bahan-baku/list}">Bahan Baku</a></li>
+                        <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/gudang/list}">Gudang</a></li>
+                    </ul>
+                </li>
 
+                <li class="treeview" id="transaksiAdmin" sec:authorize="hasRole('ADMIN')">
+                    <a href="#"><i class="fa fa-solid fa-cubes"></i> <span>Transaksi</span>
+                        <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/stok-barang/list}">Stok Barang</a></li>
                     </ul>
                 </li>
 
