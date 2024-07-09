@@ -3,10 +3,8 @@ package com.cb.controller;
 import com.cb.model.BahanBaku;
 import com.cb.model.Gudang;
 import com.cb.model.TransaksiBahanBakuCabang;
-import com.cb.repository.BahanBakuRepository;
-import com.cb.repository.CabangRepository;
-import com.cb.repository.GudangRepository;
-import com.cb.repository.TransaksiCabangRepository;
+import com.cb.repository.*;
+import com.cb.repository.dao.TransactionalBlock;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -34,6 +32,8 @@ public class TransaksiCabangController {
     private BahanBakuRepository bahanBakuRepository;
     @Autowired
     private GudangRepository gudangRepository;
+    @Autowired
+    private TransactionalBlock transactionalBlock;
 
     @GetMapping("/transaksi/cabang/list")
     public ModelMap cabang(Principal principal, @PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model){
@@ -71,7 +71,7 @@ public class TransaksiCabangController {
             return "transaksi/cabang/form";
         }
         transaksiBahanBakuCabang.setTotal(transaksiBahanBakuCabang.getHarga()*transaksiBahanBakuCabang.getQty());
-        transaksiCabangRepository.save(transaksiBahanBakuCabang);
+        transactionalBlock.saveTransactionBahanBaku(transaksiBahanBakuCabang);
         status.setComplete();
         return "redirect:/transaksi/cabang/list";
     }

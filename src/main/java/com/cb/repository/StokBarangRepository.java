@@ -14,5 +14,6 @@ import java.util.List;
 public interface StokBarangRepository extends CrudRepository<StokBarang, Long>, PagingAndSortingRepository<StokBarang, Long> {
     Page<StokBarang> findByNamaGudangContainingIgnoreCaseOrderByTglTransaksiDescIdDescIdDesc(String name, Pageable pageable);
     List<StokBarang> findByNamaGudangAndNamaBahanContainingIgnoreCaseOrderByTglTransaksiDescIdDescIdDesc(String namAgudang,String namaBahan);
+    List<StokBarang> findByNamaGudangAndNamaBahanContainingIgnoreCaseOrderByTglTransaksiAscIdDescIdAsc(String namAgudang,String namaBahan);
 
 }
