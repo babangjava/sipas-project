@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Optional;
+
 @Controller
 public class BahanBakuController {
     @Autowired
@@ -42,6 +44,10 @@ public class BahanBakuController {
     }
     @PostMapping("/bahan-baku/form")
     public String simpan(@Valid @ModelAttribute("bahanBaku") BahanBaku bahanBaku , BindingResult errors, SessionStatus status) {
+        Optional<BahanBaku> byNamaBahan = bakuRepository.findByNamaBahan(bahanBaku.getNamaBahan());
+        if(byNamaBahan.isPresent()){
+            errors.rejectValue("namaBahan", null, "Bahan baku sudah ada");
+        }
         if (errors.hasErrors()) {
             return "bahan-baku/form";
         }
