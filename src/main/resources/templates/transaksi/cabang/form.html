@@ -66,15 +66,15 @@
                         <div class="form-group">
                             <label for="qty">Qty</label>
                             <div class="row">
-                                <div class="col-md-6">
-                                    <div class="input-group mb-3">
+                                <div class="col-md-6" style="padding-right: 5px; display: inline-block; width: 100%; max-width: calc(50% - 5px);">
+                                    <div class="input-group mb-3" style="width: 100%;">
                                         <input type="text"
                                                th:field="*{qty}"
                                                name="qty" class="form-control" id="qty" placeholder="qty" />
                                     </div>
                                 </div>
-                                <div class="col-md-6" style="position:absolute; left:180px;">
-                                    <div class="input-group mb-3">
+                                <div class="col-md-6" style="padding-left: 1px; padding-right: 0; display: inline-block; width: 100%; max-width: calc(50% - 5px);">
+                                    <div class="input-group mb-3" style="width: 100%;">
                                         <input type="text"
                                                th:field="*{type}"
                                                name="type" class="form-control no-border" id="type"/>
