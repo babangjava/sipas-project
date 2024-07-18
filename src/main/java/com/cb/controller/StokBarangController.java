@@ -61,7 +61,7 @@ public class StokBarangController {
         if (errors.hasErrors()) {
             return "stok-barang/form";
         }
-        List<StokBarang> findTransBefore = stokBarangRepository.getStokBarangExisting(stokBarang.getNamaGudang(),stokBarang.getNamaBahan());
+        List<StokBarang> findTransBefore = stokBarangRepository.findByNamaGudangAndNamaBahanContainingIgnoreCaseOrderByTglTransaksiAscIdDescIdAsc(stokBarang.getNamaGudang(),stokBarang.getNamaBahan());
         if(!findTransBefore.isEmpty()){
             Integer stok = findTransBefore.get(0).getStok();
             stokBarang.setStok(stok+stokBarang.getQty());

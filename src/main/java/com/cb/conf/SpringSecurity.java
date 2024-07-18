@@ -27,13 +27,13 @@ public class SpringSecurity {
                         .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                         .anyRequest().authenticated()
-                )
-                .formLogin((form) -> form
+                ).formLogin((form) -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/",true)
                         .permitAll()
                 )
+
                 .logout((logout) -> logout.permitAll())
                 .exceptionHandling(exception -> exception.accessDeniedPage("/access-denied"));
         return http.build();

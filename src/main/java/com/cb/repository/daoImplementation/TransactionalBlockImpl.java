@@ -31,99 +31,61 @@ public class TransactionalBlockImpl implements TransactionalBlock {
             StokBarang stokBarang = stokBarangExisting.get(0);
             pengambilanBahanBaku = stokBarang.getStok() - pengambilanBahanBaku;
 
-            stokBarang.setStok(0);
+            stokBarang.setStok(pengambilanBahanBaku);
             stokBarangRepository.save(stokBarang);
         } else if (stokBarangExisting.size() == 2) {
             StokBarang stokBarang1 = stokBarangExisting.get(0);
-            int stokAwal = stokBarang1.getStok();
-            pengambilanBahanBaku = pengambilanBahanBaku - stokBarang1.getStok();
-
-            stokBarang1.setStok(0);
-            stokBarangRepository.save(stokBarang1);
-
             StokBarang stokBarang2 = stokBarangExisting.get(1);
-            pengambilanBahanBaku = stokBarang2.getStok() - pengambilanBahanBaku - stokAwal;
+            int stokAwal = stokBarang1.getStok();
 
-            stokBarang2.setStok(pengambilanBahanBaku);
-            stokBarangRepository.save(stokBarang2);
+            if (stokAwal > pengambilanBahanBaku) {
+                stokBarang1.setStok(stokAwal - pengambilanBahanBaku);
+                stokBarangRepository.save(stokBarang1);
 
+                pengambilanBahanBaku = stokBarang2.getStok() - pengambilanBahanBaku;
 
-//            StokBarang stokBarang = stokBarangExisting.get(0);
-//
-//            StokBarang stokBarang2 = stokBarangExisting.get(1);
-//
-//            pengambilanBahanBaku = stokBarang2.getStok() - pengambilanBahanBaku;
-//            stokBarang2.setStok(0);
-//            if (pengambilanBahanBaku >= stokBarang.getStok()) {
-//                pengambilanBahanBaku = stokBarang.getStok() - pengambilanBahanBaku;
-//                stokBarang.setStok(0);
-//                stokBarangRepository.save(stokBarang);
-//            }
+                stokBarang2.setStok(pengambilanBahanBaku);
+                stokBarangRepository.save(stokBarang2);
+            } else {
+                pengambilanBahanBaku = pengambilanBahanBaku - stokBarang1.getStok();
+                stokBarang1.setStok(0);
+
+                stokBarang2.setStok(stokBarang2.getStok() - pengambilanBahanBaku - stokAwal);
+            }
         }
+        else if (stokBarangExisting.size() == 3) {
+            StokBarang stokBarang1 = stokBarangExisting.get(0);
+            StokBarang stokBarang2 = stokBarangExisting.get(1);
+            StokBarang stokBarang3 = stokBarangExisting.get(2);
+            int stokAwal1 = stokBarang1.getStok();
+            int stokAwal2 = stokBarang2.getStok();
 
-//        if (stokBarangExisting.size() == 1) {
-//            StokBarang stokBarang = stokBarangExisting.get(0);
-//            int stokAwal = stokBarang.getStok();
-//            int stokAkhir = stokAwal - pengambilanBahanBaku;
-//
-//            if (stokAkhir < 0) {
-//                throw new RuntimeException("Stok tidak mencukupi untuk transaksi ini");
-//            }
-//
-//            stokBarang.setStok(0);
-//            stokBarangRepository.save(stokBarang);
-//        }
-//        else if (stokBarangExisting.size() == 2) {
-//            StokBarang stokBarang1 = stokBarangExisting.get(0);
-//            StokBarang stokBarang2 = stokBarangExisting.get(1);
-//
-//            int stokAwal1 = stokBarang1.getStok();
-//            int stokAwal2 = stokBarang2.getStok();
-//
-//            if (stokAwal2 >= pengambilanBahanBaku) {
-//                stokBarang2.setStok(stokAwal2 - pengambilanBahanBaku);
-//                stokBarangRepository.save(stokBarang1);
-//            } else {
-//                int sisaPengambilan = pengambilanBahanBaku - stokAwal2;
-//                stokBarang2.setStok(0);
-//                stokBarangRepository.save(stokBarang2);
-//
-//                stokBarang1.setStok(stokAwal1 - sisaPengambilan - stokAwal2);
-//                stokBarangRepository.save(stokBarang1);
-//            }
-//        } else if (stokBarangExisting.size() == 3) {
-//            StokBarang stokBarang1 = stokBarangExisting.get(0);
-//            StokBarang stokBarang2 = stokBarangExisting.get(1);
-//            StokBarang stokBarang3 = stokBarangExisting.get(2);
-//
-//            int stokAwal1 = stokBarang1.getStok();
-//            int stokAwal2 = stokBarang2.getStok();
-//            int stokAwal3 = stokBarang3.getStok();
-//
-//            if (stokAwal3 >= pengambilanBahanBaku) {
-//                stokBarang3.setStok(stokAwal3 - pengambilanBahanBaku);
-//                stokBarangRepository.save(stokBarang3);
-//            } else {
-//                int sisaPengambilan = pengambilanBahanBaku - stokAwal3;
-//                stokBarang3.setStok(0);
-//                stokBarangRepository.save(stokBarang3);
-//
-//                if (stokAwal2 >= sisaPengambilan) {
-//                    stokBarang2.setStok(stokAwal2 - sisaPengambilan - stokAwal3);
-//                    stokBarangRepository.save(stokBarang2);
-//
-//                    stokBarang1.setStok(stokAwal1 - pengambilanBahanBaku);
-//                    stokBarangRepository.save(stokBarang1);
-//                } else {
-//                    int sisaPengambilan2 = sisaPengambilan - stokAwal2;
-//                    stokBarang2.setStok(0);
-//                    stokBarangRepository.save(stokBarang2);
-//
-//                    stokBarang1.setStok(stokAwal1 - sisaPengambilan2 - stokAwal3 - stokAwal2);
-//                    stokBarangRepository.save(stokBarang1);
-//                }
-//            }
-//        }
+            if (stokAwal1 > pengambilanBahanBaku) {
+                stokBarang1.setStok(stokAwal1 - pengambilanBahanBaku);
+                stokBarangRepository.save(stokBarang1);
+
+                pengambilanBahanBaku = stokBarang2.getStok() - pengambilanBahanBaku;
+                stokBarang2.setStok(pengambilanBahanBaku);
+                stokBarangRepository.save(stokBarang2);
+
+                pengambilanBahanBaku = stokBarang3.getStok() + pengambilanBahanBaku - stokAwal2;
+                stokBarang3.setStok(pengambilanBahanBaku);
+                stokBarangRepository.save(stokBarang3);
+            } else {
+                pengambilanBahanBaku = pengambilanBahanBaku - stokBarang1.getStok();
+                stokBarang1.setStok(0);
+
+                int stokBaru2 = stokBarang2.getStok() - pengambilanBahanBaku - stokAwal1;
+                int getStokBaru2 = stokBaru2;
+                if (stokBaru2 <= 0) {
+                    stokBaru2 = 0;
+                }
+                stokBarang2.setStok(stokBaru2);
+                stokBarangRepository.save(stokBarang2);
+
+                stokBarang3.setStok(stokBarang3.getStok() - stokAwal2 + getStokBaru2);
+            }
+        }
 
         return save;
     }
