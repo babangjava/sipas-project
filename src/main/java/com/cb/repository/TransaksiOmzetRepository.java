@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransaksiOmzetRepository extends CrudRepository<OmzetCabang, Long>, PagingAndSortingRepository<OmzetCabang, Long> {
     Page<OmzetCabang> findByNamaCabangContainingIgnoreCaseOrderByTglTransaksiDesc(String name, Pageable pageable);
+    Page<OmzetCabang> findAllByOrderByTglTransaksiDesc(Pageable pageable);
 }

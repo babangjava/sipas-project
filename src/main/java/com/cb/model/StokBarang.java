@@ -51,7 +51,7 @@ public class StokBarang {
 
     @NotNull
     @Column(nullable = false)
-    private Integer Qty;
+    private Integer qty;
 
     @Column(nullable = false)
     private Integer stok;

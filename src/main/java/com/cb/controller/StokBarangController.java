@@ -36,9 +36,9 @@ public class StokBarangController {
     public ModelMap stokBarang(@PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model){
         if (value != null) {
             model.addAttribute("key", value);
-            return new ModelMap().addAttribute("stokBarang", stokBarangRepository.findByNamaGudangContainingIgnoreCaseOrderByTglTransaksiDescIdDescIdDesc(value, pageable));
+            return new ModelMap().addAttribute("stokBarang", stokBarangRepository.findByNamaGudangContainingIgnoreCase(value, pageable));
         } else {
-            return new ModelMap().addAttribute("stokBarang", stokBarangRepository.findByNamaGudangContainingIgnoreCaseOrderByTglTransaksiDescIdDescIdDesc("",pageable));
+            return new ModelMap().addAttribute("stokBarang", stokBarangRepository.findByNamaGudangContainingIgnoreCase("",pageable));
         }
     }
 
