@@ -50,23 +50,25 @@ public class TransactionalBlockImpl implements TransactionalBlock {
     public Gudang saveTransactionBahanBaku(Gudang obj) {
         List<StokBarang> stokBarangList =new ArrayList<StokBarang>();
         for (BahanBaku item : obj.getBahanBakuList()) {
-            StokBarang stokBarang =new StokBarang();
-            stokBarang.setId(null);
-            stokBarang.setTglTransaksi(LocalDate.now());
-            stokBarang.setNamaGudang(obj.getNamaGudang());
-            //setup nbahan
-            stokBarang.setNamaBahan(item.getNamaBahan());
-            stokBarang.setType(item.getType());
-            stokBarang.setHarga(item.getHarga());
-            stokBarang.setQty(item.getQty());
+            if(item.getQty()!=0){
+                StokBarang stokBarang =new StokBarang();
+                stokBarang.setId(null);
+                stokBarang.setTglTransaksi(LocalDate.now());
+                stokBarang.setNamaGudang(obj.getNamaGudang());
+                //setup nbahan
+                stokBarang.setNamaBahan(item.getNamaBahan());
+                stokBarang.setType(item.getType());
+                stokBarang.setHarga(item.getHarga());
+                stokBarang.setQty(item.getQty());
 
-            Integer stokBarangTerakhir = stokBarangRepository.getStokBarangTerakhir(obj.getNamaGudang(), item.getNamaBahan());
-            if(stokBarangTerakhir==null){
-                stokBarangTerakhir=0;
+                Integer stokBarangTerakhir = stokBarangRepository.getStokBarangTerakhir(obj.getNamaGudang(), item.getNamaBahan());
+                if(stokBarangTerakhir==null){
+                    stokBarangTerakhir=0;
+                }
+                stokBarang.setStok(item.getQty()+ stokBarangTerakhir);
+
+                stokBarangList.add(stokBarang);
             }
-            stokBarang.setStok(item.getQty()+ stokBarangTerakhir);
-
-            stokBarangList.add(stokBarang);
         }
         stokBarangRepository.saveAll(stokBarangList);
         return obj;
