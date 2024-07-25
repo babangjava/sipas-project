@@ -57,6 +57,7 @@ public class TransactionalBlockImpl implements TransactionalBlock {
             if(item.getQty()!=0){
                 StokBarang stokBarang = stokBarangRepository.findByNamaGudangAndNamaBahanContainingIgnoreCase(obj.getNamaGudang(), item.getNamaBahan());
                 if(stokBarang==null){
+                    stokBarang = new StokBarang();
                     stokBarang.setId(null);
                 }
                 stokBarang.setTglTransaksi(LocalDate.now());

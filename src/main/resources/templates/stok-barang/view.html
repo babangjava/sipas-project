@@ -51,9 +51,10 @@
                                 <tbody id="bahanBakuTable">
                                 <tr th:each="bahan, stat : ${stokBarang.bahanBakuList}">
                                     <td><input type="text" th:field="*{bahanBakuList[__${stat.index}__].namaBahan}" class="form-control" name="bahan.namaBahan" readonly /></td>
-                                    <td><input type="text" th:field="*{bahanBakuList[__${stat.index}__].qty}" class="form-control" name="bahan.qty" placeholder="Qty" /></td>
+                                    <td><input type="text" th:field="*{bahanBakuList[__${stat.index}__].qty}" class="form-control" name="bahan.qty" placeholder="Qty" readonly/></td>
                                     <td><input type="text" th:field="*{bahanBakuList[__${stat.index}__].type}" class="form-control" name="bahan.type" readonly /></td>
-                                    <td><input type="text" th:field="*{bahanBakuList[__${stat.index}__].harga}" class="form-control" name="bahan.harga"  readonly /></td>
+                                    <td><input type="text" th:value="${#numbers.formatDecimal(bahan.harga,0,'COMMA', 0, 'POINT')}" class="form-control" name="bahan.harga"  readonly /></td>
+                                    <td><input type="hidden" th:field="*{bahanBakuList[__${stat.index}__].harga}" class="form-control" name="bahan.harga"  readonly /></td>
                                 </tr>
                                 </tbody>
                             </table>
