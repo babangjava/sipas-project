@@ -38,11 +38,15 @@ public class TransactionalBlockImpl implements TransactionalBlock {
             transaksiBahanBakuCabang.setHarga(item.getHarga());
             transaksiBahanBakuCabang.setQty(item.getQty());
             transaksiBahanBakuCabang.setTotal(item.getQty()*item.getHarga());
+            //untuk mengurangi stok otomatis
+            StokBarang stokBarang = stokBarangRepository.findByNamaGudangAndNamaBahanContainingIgnoreCase(obj.getNamaGudang(), item.getNamaBahan());
+            stokBarang.setStok(stokBarang.getStok()-item.getQty());
+            stokBarangRepository.save(stokBarang);
 
             transaksiBahanBakuCabangList.add(transaksiBahanBakuCabang);
         }
 
-        transaksiCabangRepository.saveAll(transaksiBahanBakuCabangList);
+        Iterable<TransaksiBahanBakuCabang> transaksiBahanBakuCabangSaved = transaksiCabangRepository.saveAll(transaksiBahanBakuCabangList);
         return obj;
     }
 
@@ -51,8 +55,10 @@ public class TransactionalBlockImpl implements TransactionalBlock {
         List<StokBarang> stokBarangList =new ArrayList<StokBarang>();
         for (BahanBaku item : obj.getBahanBakuList()) {
             if(item.getQty()!=0){
-                StokBarang stokBarang =new StokBarang();
-                stokBarang.setId(null);
+                StokBarang stokBarang = stokBarangRepository.findByNamaGudangAndNamaBahanContainingIgnoreCase(obj.getNamaGudang(), item.getNamaBahan());
+                if(stokBarang==null){
+                    stokBarang.setId(null);
+                }
                 stokBarang.setTglTransaksi(LocalDate.now());
                 stokBarang.setNamaGudang(obj.getNamaGudang());
                 //setup nbahan

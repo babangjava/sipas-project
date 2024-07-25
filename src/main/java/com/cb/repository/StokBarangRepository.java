@@ -16,6 +16,7 @@ import java.util.List;
 public interface StokBarangRepository extends CrudRepository<StokBarang, Long>, PagingAndSortingRepository<StokBarang, Long> {
     @Query(value = "SELECT stok FROM stok_barang where nama_gudang =:namaGudang AND nama_bahan=:namaBahan", nativeQuery = true)
     Integer getStokBarangTerakhir(@Param("namaGudang") String namAgudang, @Param("namaBahan") String namaBahan);
-    List<StokBarang> findByNamaGudangAndNamaBahanContainingIgnoreCaseOrderByTglTransaksiAscIdDescIdAsc(String namAgudang,String namaBahan);
+    StokBarang findByNamaGudangAndNamaBahanContainingIgnoreCase(@Param("namaGudang") String namAgudang, @Param("namaBahan") String namaBahan);
+//    List<StokBarang> findByNamaGudangAndNamaBahanContainingIgnoreCaseOrderByTglTransaksiAscIdDescIdAsc(String namAgudang,String namaBahan);
 
 }
