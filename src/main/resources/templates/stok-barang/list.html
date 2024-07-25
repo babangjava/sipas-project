@@ -33,8 +33,8 @@
                                 <td>
                                     <a href="#" class="btn btn-default" th:href="@{/stok-barang/form(id=${st.id})}"
                                        title="Tambah Data"><span class="glyphicon glyphicon-trash">add</span></a>
-                                    <a href="#" class="btn btn-default" th:href="@{/stok-barang/delete(id=${st.id})}"
-                                       title="Delete Data"><span class="glyphicon glyphicon-trash"></span></a>
+                                    <a href="#" class="btn btn-default" th:href="@{/stok-barang/view(id=${st.id})}"
+                                       title="Tambah Data"><span class="glyphicon glyphicon-trash">view</span></a>
                                 </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(stokBarang.content)}">

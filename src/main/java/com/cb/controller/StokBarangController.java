@@ -21,6 +21,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,6 +55,25 @@ public class StokBarangController {
         List<BahanBaku> allBahanBaku = (List<BahanBaku>) bahanBakuRepository.findAll();
         for (BahanBaku item : allBahanBaku) {
             item.setQty(0);
+        }
+        gudang.setBahanBakuList(allBahanBaku);
+        modelMap.addAttribute("stokBarang", gudang);
+        return modelMap;
+    }
+
+    @GetMapping("/stok-barang/view")
+    public ModelMap tampilkanView(@RequestParam(value = "id", required = false) Gudang gudang ) {
+        ModelMap  modelMap = new ModelMap();
+        List<StokBarang> stokBarangList = stokBarangRepository.findByNamaGudangContainingIgnoreCaseOrderById(gudang.getNamaGudang());
+
+        List<BahanBaku> allBahanBaku = new ArrayList<BahanBaku>();
+        for (StokBarang item : stokBarangList) {
+            BahanBaku bahanBaku =new BahanBaku();
+            bahanBaku.setNamaBahan(item.getNamaBahan());
+            bahanBaku.setHarga(item.getHarga());
+            bahanBaku.setType(item.getType());
+            bahanBaku.setQty(item.getStok());
+            allBahanBaku.add(bahanBaku);
         }
         gudang.setBahanBakuList(allBahanBaku);
         modelMap.addAttribute("stokBarang", gudang);
