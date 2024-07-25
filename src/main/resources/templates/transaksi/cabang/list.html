@@ -30,7 +30,6 @@
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="namaGudang">Nama Gudang</th>
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="namaBahan">Nama Bahan</th>
                                 <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="qty">Jumlah</th>
-                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="catatan">Catatan</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -41,7 +40,6 @@
                                 <td th:text="${st.namaGudang}">Nama Gudang</td>
                                 <td th:text="${st.namaBahan}">Nama Bahan</td>
                                 <td th:text="${st.qty}+' '+${st.type}" >qty</td>
-                                <td th:text="${st.catatan}">Catatan</td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(transaksiCabang.content)}">
                                 <td colspan="13" class="text-center">Data Cabang tidak ditemukan</td>

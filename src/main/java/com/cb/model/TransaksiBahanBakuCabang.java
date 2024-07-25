@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static jakarta.persistence.TemporalType.DATE;
 
@@ -35,8 +36,6 @@ public class TransaksiBahanBakuCabang {
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private LocalDate tglTransaksi;
 
-    @NotEmpty
-    @NotNull
     @Column(nullable = false)
     private String namaBahan;
 
@@ -45,23 +44,20 @@ public class TransaksiBahanBakuCabang {
     @Column(nullable = false)
     private String namaGudang;
 
-    @NotNull
+
     @Column(nullable = false)
     private Double harga;
 
-    @NotEmpty
-    @NotNull
     @Column(nullable = false)
     private String type;
 
-    @NotNull
     @Column(nullable = false)
     private Integer qty;
 
     @Column(nullable = false)
     private Double total;
 
-    @Column(nullable = true)
-    private String catatan;
+    @Transient
+    private List<BahanBaku> bahanBakuList;
 
 }

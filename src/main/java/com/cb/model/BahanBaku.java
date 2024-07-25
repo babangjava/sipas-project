@@ -33,4 +33,7 @@ public class BahanBaku {
     @NotNull
     @Column(nullable = false)
     private Double harga;
+
+    @Transient
+    private Integer qty;
 }

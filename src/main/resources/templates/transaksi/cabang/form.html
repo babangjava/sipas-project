@@ -1,5 +1,5 @@
 <!--/* Thymeleaf templating engine, Each token will be replaced by their respective titles in the resulting page. */-->
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
 <head>
     <title>Bahan Baku</title>
 </head>
@@ -16,7 +16,7 @@
                 </div>
                 <!-- /.box-header -->
                 <!-- form start -->
-                <form role="form" th:object="${transaksiCabang}" method="post" th:action="@{/transaksi/cabang/form}">
+                <form role="form" th:object="${transaksiCabang}" method="post">
                     <div class="box-body">
                         <div class="form-group">
                             <label for="namaCabang">Nama Cabang</label>
@@ -38,7 +38,7 @@
                         </div>
                         <div class="form-group">
                             <label for="namaGudang">Nama Gudang</label>
-                            <select th:field="*{namaGudang}" class="form-control" id="namaGudang">
+                            <select th:field="*{namaGudang}" class="form-control" id="namaGudang" onchange="getDataBarang(this)">
                                 <option value="">Pilih Nama Gudang</option>
                                 <option th:each="bahan : ${gudangList}" th:value="${bahan.namaGudang}" th:text="${bahan.namaGudang}"></option>
                             </select>
@@ -46,28 +46,29 @@
                                 Pesan error nanti di sini
                             </label>
                         </div>
-                        <!-- fragment_form.html -->
+
                         <div class="form-group">
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
                                     <th>Nama Bahan</th>
                                     <th>Qty</th>
-                                    <th>Type</th>
-                                    <th>Harga</th>
                                 </tr>
                                 </thead>
                                 <tbody id="bahanBakuTable">
-                                <tr th:each="bahan : ${bahanBakuList}">
-                                    <td><input type="text" class="form-control" name="namaBahan" th:value="${bahan.namaBahan}" readonly /></td>
-                                    <td><input type="text" class="form-control" name="qty" placeholder="Qty" /></td>
-                                    <td><input type="text" class="form-control" name="type" placeholder="Type" th:value="${bahan.type}" readonly /></td>
-                                    <td><input type="text" class="form-control" name="harga" placeholder="Harga" th:value="${bahan.harga}" readonly /></td>
-                                </tr>
+<!--                                <tr th:each="bahan : ${transaksiCabang.bahanBakuList}">-->
+<!--                                    <td><input type="text" class="form-control" name="namaBahan" th:value="${bahan.namaBahan}" readonly /></td>-->
+<!--                                    <td><input type="text" class="form-control" name="qty" placeholder="Qty" /></td>-->
+<!--                                </tr>-->
+                                    <tr th:each="bahan, stat : ${transaksiCabang.bahanBakuList}">
+                                        <td><input type="text" th:field="*{bahanBakuList[__${stat.index}__].namaBahan}" class="form-control" name="bahan.namaBahan" th:value="${bahan.namaBahan}" readonly /></td>
+                                        <td><input type="text" th:field="*{bahanBakuList[__${stat.index}__].qty}" class="form-control" name="bahan.qty" placeholder="Qty" /></td>
+                                        <td><input type="text" th:field="*{bahanBakuList[__${stat.index}__].type}" class="form-control" name="bahan.type" th:value="${bahan.type}" readonly /></td>
+                                        <td><input type="hidden" th:field="*{bahanBakuList[__${stat.index}__].harga}" class="form-control" name="bahan.harga" th:value="${bahan.harga}" readonly /></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-
 
                         <input type="hidden"
                                th:field="*{harga}"
@@ -76,15 +77,6 @@
                                th:field="*{total}"
                                name="total" class="form-control" id="total" placeholder="Total" />
 
-                        <div class="form-group">
-                            <label for="catatan">Catatan</label>
-                            <input type="text"
-                                   th:field="*{catatan}"
-                                   name="catatan" class="form-control" id="catatan" placeholder="catatan" />
-                            <label class="control-label error-label"  th:if="${#fields.hasErrors('catatan')}"th:errors="*{catatan}">
-                                Pesan error nanti di sini
-                            </label>
-                        </div>
                         <div class="form-group">
                             <a th:href="@{/transaksi/cabang/list}" class="btn btn-default" role="button" title="Back list">
                                 <span aria-hidden="true"></span>Batal
@@ -97,90 +89,23 @@
         </div>
     </div>
     <script type="text/javascript">
-        $(document).ready(function() {
-            // AJAX request to populate table
-            $.ajax({
-                url: '/api/bahan-baku',
-                type: 'GET',
-                success: function(data) {
-                    var tableBody = $('#bahanBakuTable');
-                    if (Array.isArray(data)) {
-                        data.forEach(function(item, index) {
-                            tableBody.append(
-                                '<tr>' +
-                                '<td><input type="hidden" class="form-control" name="bahanBakuList[' + index + '].namaBahan" value="' + item.namaBahan + '" readonly /></td>' +
-                                '<td><input type="hidden" class="form-control" name="bahanBakuList[' + index + '].qty" placeholder="Qty" /></td>' +
-                                '<td><input type="hidden" class="form-control" name="bahanBakuList[' + index + '].type" value="' + item.type + '" readonly /></td>' +
-                                '<td><input type="hidden" class="form-control" name="bahanBakuList[' + index + '].harga" value="' + item.harga + '" readonly /></td>' +
-                                '</tr>'
-                            );
-                        });
-                    } else {
-                        console.error('Format data salah:', data);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Gagal ambil data:', error);
-                }
-            });
-
-            // Event for qty field change
-            $(document).on('change', 'input[name="qty"]', function() {
-                // Get the closest row
-                var row = $(this).closest('tr');
-                // Get the namaBahan from the same row
-                var namaBahan = row.find('input[name="namaBahan"]').val();
-                // Fetch and update data for this namaBahan
-                getDataBarang(namaBahan, row);
-            });
-
-            // Function to fetch and update data based on namaBahan
-            function getDataBarang(namaBahan, row) {
-                if (namaBahan) {
-                    $.ajax({
-                        url: '/data/bahan-baku/' + namaBahan,
-                        type: 'GET',
-                        success: function(data) {
-                            if (data && data.type && data.harga) {
-                                // Update fields in the same row
-                                row.find('input[name="type"]').val(data.type);
-                                row.find('input[name="harga"]').val(data.harga);
-                            } else {
-                                console.error('Data not found or incomplete.');
-                                row.find('input[name="type"]').val('');
-                                row.find('input[name="harga"]').val('');
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('AJAX request failed:', status, error);
-                            row.find('input[name="type"]').val('');
-                            row.find('input[name="harga"]').val('');
-                        }
-                    });
-                } else {
-                    row.find('input[name="type"]').val('');
-                    row.find('input[name="harga"]').val('');
-                }
-            }
-
-            // Handle form submission
-            $('form').on('submit', function(event) {
-                var form = $(this);
-                // Loop through table rows
-                form.find('#bahanBakuTable tr').each(function() {
-                    var row = $(this);
-                    var qty = row.find('input[name="qty"]').val();
-                    // If qty is empty, hide the row
-                    if (!qty) {
-                        row.find('input[name="qty"]').prop('disabled', true); // Disable qty input
-                        row.find('input[name="namaBahan"]').prop('disabled', true); // Disable namaBahan input
-                        row.find('input[name="type"]').prop('disabled', true); // Disable type input
-                        row.find('input[name="harga"]').prop('disabled', true); // Disable harga input
+        function getDataBarang(obj) {
+            var namaBahan = $("#namaBahan").val();
+            if (namaBahan) {
+                $.ajax({
+                    url: '/api/bahan-baku/' + namaBahan,
+                    type: 'GET',
+                    success: function(data) {
+                        $("#harga").val(data.harga);
+                        $("#type").val(data.type);
                     }
                 });
-            });
-        });
-    </script>
+            } else {
+                $("#harga").val('');
+                $("#type").val('');
+            }
+        }
+	</script>
 </div>
 </body>
 </html>
