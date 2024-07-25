@@ -6,6 +6,7 @@ import com.cb.model.StokBarang;
 import com.cb.repository.BahanBakuRepository;
 import com.cb.repository.GudangRepository;
 import com.cb.repository.StokBarangRepository;
+import com.cb.repository.dao.TransactionalBlock;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -31,44 +32,39 @@ public class StokBarangController {
     private GudangRepository gudangRepository;
     @Autowired
     private BahanBakuRepository bahanBakuRepository;
+    @Autowired
+    private TransactionalBlock transactionalBlock;
 
     @GetMapping("/stok-barang/list")
     public ModelMap stokBarang(@PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model){
         if (value != null) {
             model.addAttribute("key", value);
-            return new ModelMap().addAttribute("stokBarang", stokBarangRepository.findByNamaGudangContainingIgnoreCase(value, pageable));
+            return new ModelMap().addAttribute("stokBarang", gudangRepository.findByNamaGudangContainingIgnoreCase(value, pageable));
         } else {
-            return new ModelMap().addAttribute("stokBarang", stokBarangRepository.findByNamaGudangContainingIgnoreCase("",pageable));
+            return new ModelMap().addAttribute("stokBarang", gudangRepository.findByNamaGudangContainingIgnoreCase("",pageable));
         }
     }
 
     @GetMapping("/stok-barang/form")
-    public ModelMap tampilkanForm(@RequestParam(value = "id", required = false) StokBarang stokBarang ) {
-        if (stokBarang == null) {
-            stokBarang = new StokBarang();
-            stokBarang.setTglTransaksi(LocalDate.now());
+    public ModelMap tampilkanForm(@RequestParam(value = "id", required = false) Gudang gudang ) {
+        if (gudang == null) {
+            gudang = new Gudang();
         }
-        Iterable<Gudang> listGudang = gudangRepository.findAll();
-        Iterable<BahanBaku> listBahan = bahanBakuRepository.findAll();
         ModelMap  modelMap = new ModelMap();
-        modelMap.addAttribute("listGudang", listGudang);
-        modelMap.addAttribute("listBahan", listBahan);
-        modelMap.addAttribute("stokBarang", stokBarang);
+        List<BahanBaku> allBahanBaku = (List<BahanBaku>) bahanBakuRepository.findAll();
+        for (BahanBaku item : allBahanBaku) {
+            item.setQty(0);
+        }
+        gudang.setBahanBakuList(allBahanBaku);
+        modelMap.addAttribute("stokBarang", gudang);
         return modelMap;
     }
     @PostMapping("/stok-barang/form")
-    public String simpan(@Valid @ModelAttribute("stokBarang") StokBarang stokBarang , BindingResult errors, SessionStatus status) {
+    public String simpan(@Valid @ModelAttribute("stokBarang") Gudang gudang , BindingResult errors, SessionStatus status) {
         if (errors.hasErrors()) {
             return "stok-barang/form";
         }
-        List<StokBarang> findTransBefore = stokBarangRepository.findByNamaGudangAndNamaBahanContainingIgnoreCaseOrderByTglTransaksiAscIdDescIdAsc(stokBarang.getNamaGudang(),stokBarang.getNamaBahan());
-        if(!findTransBefore.isEmpty()){
-            Integer stok = findTransBefore.get(0).getStok();
-            stokBarang.setStok(stok+stokBarang.getQty());
-        }else{
-            stokBarang.setStok(stokBarang.getQty());
-        }
-        stokBarangRepository.save(stokBarang);
+        transactionalBlock.saveTransactionBahanBaku(gudang);
         status.setComplete();
         return "redirect:/stok-barang/list";
     }

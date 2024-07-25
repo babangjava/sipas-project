@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -27,6 +29,11 @@ public class Gudang {
 
     @Column(nullable = true)
     private String alamat;
+
+    @Transient
+    private List<StokBarang> stokBarangList;
+    @Transient
+    private List<BahanBaku> bahanBakuList;
 
 
 }

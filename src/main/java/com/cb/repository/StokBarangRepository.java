@@ -14,9 +14,8 @@ import java.util.List;
 
 @Repository
 public interface StokBarangRepository extends CrudRepository<StokBarang, Long>, PagingAndSortingRepository<StokBarang, Long> {
-    Page<StokBarang> findByNamaGudangContainingIgnoreCase(String name, Pageable pageable);
-    @Query(value = "SELECT * FROM stok_barang WHERE nama_gudang = :namAgudang AND nama_bahan = :namaBahan AND stok != 0 ORDER by tgl_transaksi ASC, id ASC", nativeQuery = true) // @Query(value = "UPD User u SET u.email = :email WHERE u.id = :id", nativeQuery = true)
-    List<StokBarang> getStokBarangExisting(@Param("namAgudang") String namAgudang, @Param("namaBahan") String namaBahan);
+    @Query(value = "SELECT stok FROM stok_barang where nama_gudang =:namaGudang AND nama_bahan=:namaBahan", nativeQuery = true)
+    Integer getStokBarangTerakhir(@Param("namaGudang") String namAgudang, @Param("namaBahan") String namaBahan);
     List<StokBarang> findByNamaGudangAndNamaBahanContainingIgnoreCaseOrderByTglTransaksiAscIdDescIdAsc(String namAgudang,String namaBahan);
 
 }
