@@ -20,7 +20,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Controller
 public class TransaksiCabangController {
@@ -66,13 +69,26 @@ public class TransaksiCabangController {
     }
 
     @PostMapping("/transaksi/cabang/form")
-    public String simpan(@Valid @ModelAttribute("transaksiCabang") TransaksiBahanBakuCabang transaksiBahanBakuCabang , BindingResult errors, SessionStatus status) {
+    public String simpanTransaksiCabang(@Valid @ModelAttribute("transaksiCabang") TransaksiBahanBakuCabang transaksiBahanBakuCabang, BindingResult errors, SessionStatus status) {
+        System.out.println("Nama Bahan: " + transaksiBahanBakuCabang.getNamaBahan());
+        System.out.println("Qty: " + transaksiBahanBakuCabang.getQty());
+        System.out.println("Type: " + transaksiBahanBakuCabang.getType());
+        System.out.println("Harga: " + transaksiBahanBakuCabang.getHarga());
+        System.out.println("Total: " + transaksiBahanBakuCabang.getTotal());
+
         if (errors.hasErrors()) {
+            errors.getAllErrors().forEach(error -> System.out.println(error.toString()));
             return "transaksi/cabang/form";
         }
-        transaksiBahanBakuCabang.setTotal(transaksiBahanBakuCabang.getHarga()*transaksiBahanBakuCabang.getQty());
-        transactionalBlock.saveTransactionBahanBaku(transaksiBahanBakuCabang);
-        status.setComplete();
+        try {
+            transaksiBahanBakuCabang.setTotal(transaksiBahanBakuCabang.getHarga() * transaksiBahanBakuCabang.getQty());
+            transaksiCabangRepository.save(transaksiBahanBakuCabang);
+            status.setComplete();
+        } catch (Exception e) {
+            e.printStackTrace();
+            errors.reject("simpanGagal", "Gagal menyimpan data");
+            return "transaksi/cabang/form";
+        }
         return "redirect:/transaksi/cabang/list";
     }
 
@@ -106,6 +122,25 @@ public class TransaksiCabangController {
         String email = principal.getName();
         String namaCabang  = cabangRepository.findByEmail(email).getNamaCabang();
         return namaCabang;
+    }
+
+    // Menambahkan metode baru untuk memfilter transaksiBahanBakuCabangList
+    @GetMapping("/transaksi/cabang/list/filtered")
+    public String showFilteredTransaksiBahanBakuCabang(Model model) {
+        // Mengambil semua transaksi dan mengubahnya menjadi List
+        List<TransaksiBahanBakuCabang> transaksiBahanBakuCabangList = StreamSupport
+                .stream(transaksiCabangRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
+
+        // Filter transaksi yang memiliki qty lebih dari 0
+        List<TransaksiBahanBakuCabang> filteredTransaksi = transaksiBahanBakuCabangList.stream()
+                .filter(transaksi -> transaksi.getQty() != null && transaksi.getQty() > 0)
+                .collect(Collectors.toList());
+
+        // Menambahkan daftar transaksi yang sudah difilter ke model
+        model.addAttribute("transaksiBahanBakuCabangList", filteredTransaksi);
+
+        return "transaksiBahanBakuCabang";
     }
 }
 

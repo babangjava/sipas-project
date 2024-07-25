@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -18,7 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Controller
 public class BahanBakuController {
@@ -44,17 +48,22 @@ public class BahanBakuController {
     }
     @PostMapping("/bahan-baku/form")
     public String simpan(@Valid @ModelAttribute("bahanBaku") BahanBaku bahanBaku , BindingResult errors, SessionStatus status) {
+        if (errors.hasErrors()) {
+            errors.getAllErrors().forEach(error -> System.out.println(error.toString()));
+            return "bahan-baku/form";
+        }
         Optional<BahanBaku> byNamaBahan = bakuRepository.findByNamaBahan(bahanBaku.getNamaBahan());
         if(byNamaBahan.isPresent()){
             errors.rejectValue("namaBahan", null, "Bahan baku sudah ada");
-        }
-        if (errors.hasErrors()) {
             return "bahan-baku/form";
         }
+        System.out.println("Sebelum save: " + bahanBaku);
         bakuRepository.save(bahanBaku);
+        System.out.println("Setelah save: " + bahanBaku);
         status.setComplete();
         return "redirect:/bahan-baku/list";
     }
+
 
     @GetMapping("/bahan-baku/delete")
     public ModelMap deleteConfirm(@RequestParam(value = "id", required = true) BahanBaku bahanBaku ) {
@@ -74,6 +83,17 @@ public class BahanBakuController {
         }
         status.setComplete();
         return "redirect:/bahan-baku/list";
+    }
+
+    @GetMapping("api/bahan-baku")
+    public ResponseEntity<List<BahanBaku>> getAllBahanBaku() {
+        Iterable<BahanBaku> bahanBakusIterable = bakuRepository.findAll();
+        List<BahanBaku> bahanBakus = StreamSupport.stream(bahanBakusIterable.spliterator(), false)
+                .collect(Collectors.toList());
+        if (bahanBakus.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(bahanBakus);
     }
 }
 
