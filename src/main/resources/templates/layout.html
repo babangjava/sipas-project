@@ -132,6 +132,7 @@
                     </a>
                     <ul class="treeview-menu">
                         <li sec:authorize="hasRole('USER')"><a th:href="@{/transaksi/cabang/list}">Bahan Baku</a></li>
+                        <li sec:authorize="hasRole('USER')"><a th:href="@{/transaksi/pengeluaran/list}">Pengeluaran</a></li>
                         <li sec:authorize="hasRole('USER')"><a th:href="@{/transaksi/omzet/list}">Omset</a></li>
                     </ul>
                 </li>
