@@ -102,14 +102,26 @@ public class TransactionalBlockImpl implements TransactionalBlock {
         List<LaporanCabang> laporanCabangHeaders = jdbcTemplate.query(sql, (rs, rowNum) -> new LaporanCabang(rs.getString("nama_cabang"),rs.getDate("tgl_transaksi").toLocalDate()));
         for (LaporanCabang item : laporanCabangHeaders) {
             Double totalTransaksiBahanBaku = jdbcTemplate.queryForObject("SELECT SUM(total) FROM transaksi_bahan_baku_cabang where nama_cabang='"+item.getNamaCabang()+"' AND CAST(tgl_transaksi AS DATE)='"+formattedString+"'", Double.class);
+            if(totalTransaksiBahanBaku==null){
+                totalTransaksiBahanBaku=0.0;
+            }
             Double totalTransaksiOmzet = jdbcTemplate.queryForObject("SELECT SUM(omzet) FROM omzet_cabang where nama_cabang='"+item.getNamaCabang()+"' AND CAST(tgl_transaksi AS DATE)='"+formattedString+"'", Double.class);
+            if(totalTransaksiOmzet==null){
+                totalTransaksiOmzet=0.0;
+            }
             Double totalTransaksiPengeluaran = jdbcTemplate.queryForObject("SELECT SUM(harga) FROM pengeluaran_cabang where nama_cabang='"+item.getNamaCabang()+"' AND CAST(tgl_transaksi AS DATE)='"+formattedString+"'", Double.class);
-
+            if(totalTransaksiPengeluaran==null){
+                totalTransaksiPengeluaran=0.0;
+            }
             item.setTotalPengeluaran(totalTransaksiPengeluaran);
             item.setTotalOmzet(totalTransaksiOmzet);
             item.setTotalBahanBaku(totalTransaksiBahanBaku);
 
-            item.setKeuntungan(item.getTotalOmzet()-item.getTotalBahanBaku());
+            Double keuntungan = 0.0;
+            if(totalTransaksiOmzet!=0.0){
+                keuntungan = item.getTotalOmzet() - item.getTotalBahanBaku();
+            }
+            item.setKeuntungan(keuntungan);
         }
         Page<LaporanCabang> page = new PageImpl<>(laporanCabangHeaders);
         return page;

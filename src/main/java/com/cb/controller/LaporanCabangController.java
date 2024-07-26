@@ -23,12 +23,6 @@ import java.util.List;
 @Controller
 public class LaporanCabangController {
     @Autowired
-    private TransaksiCabangRepository transaksiCabangRepository;
-    @Autowired
-    private TransaksiOmzetRepository transaksiOmzetRepository;
-    @Autowired
-    private CabangRepository cabangRepository;
-    @Autowired
     private TransactionalBlock transactionalBlock;
 
     @GetMapping("laporan-cabang/list")
