@@ -1,5 +1,6 @@
 package com.cb.repository.daoImplementation;
 
+import com.cb.dto.LaporanCabang;
 import com.cb.model.BahanBaku;
 import com.cb.model.Gudang;
 import com.cb.model.StokBarang;
@@ -8,16 +9,23 @@ import com.cb.repository.StokBarangRepository;
 import com.cb.repository.TransaksiCabangRepository;
 import com.cb.repository.dao.TransactionalBlock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 @Transactional(readOnly = false)
 public class TransactionalBlockImpl implements TransactionalBlock {
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
     @Autowired
     private TransaksiCabangRepository transaksiCabangRepository;
     @Autowired
@@ -79,5 +87,31 @@ public class TransactionalBlockImpl implements TransactionalBlock {
         }
         stokBarangRepository.saveAll(stokBarangList);
         return obj;
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<LaporanCabang> laporanKeuntunganHarian(Pageable pageable) {
+        LocalDate localDate = LocalDate.now();//For reference
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedString = localDate.format(formatter);
+
+        String sql = "SELECT nama_cabang, tgl_transaksi FROM transaksi_bahan_baku_cabang WHERE CAST(tgl_transaksi AS DATE)='"+formattedString+"' GROUP BY nama_cabang,tgl_transaksi ORDER BY nama_cabang ASC";
+
+        List<LaporanCabang> laporanCabangHeaders = jdbcTemplate.query(sql, (rs, rowNum) -> new LaporanCabang(rs.getString("nama_cabang"),rs.getDate("tgl_transaksi").toLocalDate()));
+        for (LaporanCabang item : laporanCabangHeaders) {
+            Double totalTransaksiBahanBaku = jdbcTemplate.queryForObject("SELECT SUM(total) FROM transaksi_bahan_baku_cabang where nama_cabang='"+item.getNamaCabang()+"' AND CAST(tgl_transaksi AS DATE)='"+formattedString+"'", Double.class);
+            Double totalTransaksiOmzet = jdbcTemplate.queryForObject("SELECT SUM(omzet) FROM omzet_cabang where nama_cabang='"+item.getNamaCabang()+"' AND CAST(tgl_transaksi AS DATE)='"+formattedString+"'", Double.class);
+            Double totalTransaksiPengeluaran = jdbcTemplate.queryForObject("SELECT SUM(harga) FROM pengeluaran_cabang where nama_cabang='"+item.getNamaCabang()+"' AND CAST(tgl_transaksi AS DATE)='"+formattedString+"'", Double.class);
+
+            item.setTotalPengeluaran(totalTransaksiPengeluaran);
+            item.setTotalOmzet(totalTransaksiOmzet);
+            item.setTotalBahanBaku(totalTransaksiBahanBaku);
+
+            item.setKeuntungan(item.getTotalOmzet()-item.getTotalBahanBaku());
+        }
+        Page<LaporanCabang> page = new PageImpl<>(laporanCabangHeaders);
+        return page;
     }
 }

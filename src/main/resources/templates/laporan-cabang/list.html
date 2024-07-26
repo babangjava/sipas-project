@@ -1,11 +1,11 @@
 <!--/* Thymeleaf templating engine, Each token will be replaced by their respective titles in the resulting page. */-->
 <html  xmlns:th="http://thymeleaf.org" layout:decorate="~{layout}">
 <head>
-    <title>Omzet</title>
+    <title>Laporan Keuntungan Harian</title>
 </head>
 <body>
 <div layout:fragment="breadcrumb">
-    <h1>Omzet</h1>
+    <h1>Laporan Keuntungan Harian</h1>
 </div>
 <div layout:fragment="content">
     <div class="row">
@@ -36,28 +36,32 @@
                             <thead>
                             <tr>
                                 <th> No</th>
-                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="namaCabang">Nama Cabang</th>
-                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="tglTransaksi">Tgl Transaksi</th>
-                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="omzet">Omzet</th>
-                                <th><a class="fa fa-fw fa-sort"><a class="sorted" sd:pagination-sort="catatan">Catatan</th>
+                                <th><a class="sorted">Nama Cabang</th>
+                                <th><a class="sorted">Tgl Transaksi</th>
+                                <th><a class="sorted">Bahan Baku</th>
+                                <th><a class="sorted">Omzet</th>
+                                <th><a class="sorted">Pengeluaran</th>
+                                <th><a class="sorted">Keuntungan</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="st,iter : ${transaksiOmzet}">
+                            <tr th:each="st,iter : ${listCabang}">
                                 <td th:text="${iter.count}">1</td>
                                 <td th:text="${st.namaCabang}">Nama Cabang</td>
                                 <td th:text="${st.tglTransaksi}">Tgl Transaksi</td>
-                                <td th:text="${#numbers.formatDecimal(st.omzet,0,'COMMA', 0, 'POINT')}">Omzet</td>
-                                <td th:text="${st.catatan}">Catatan</td>
+                                <td th:text="${#numbers.formatDecimal(st.totalBahanBaku,0,'COMMA', 0, 'POINT')}">Bahan Baku</td>
+                                <td th:text="${#numbers.formatDecimal(st.totalOmzet,0,'COMMA', 0, 'POINT')}">Omzet</td>
+                                <td th:text="${#numbers.formatDecimal(st.totalPengeluaran,0,'COMMA', 0, 'POINT')}">Pengeluaran</td>
+                                <td th:text="${#numbers.formatDecimal(st.keuntungan,0,'COMMA', 0, 'POINT')}">Keuntungan</td>
                             </tr>
-                            <tr th:if="${#lists.isEmpty(transaksiOmzet.content)}">
-                                <td colspan="13" class="text-center">Data Cabang tidak ditemukan</td>
+                            <tr th:if="${#lists.isEmpty(listCabang.content)}">
+                                <td colspan="13" class="text-center">Data tidak ditemukan</td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div th:if="${not #lists.isEmpty(transaksiOmzet.content)}">
+                <div th:if="${not #lists.isEmpty(listCabang.content)}">
 
                     <div sd:pagination-summary="">info</div>
                     <div class="text-center">
