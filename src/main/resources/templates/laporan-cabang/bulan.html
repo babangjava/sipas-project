@@ -22,18 +22,18 @@
               <thead>
               <tr>
                 <th>No</th>
-                <th><a class="fa fa-fw fa-sort sorted" sd:pagination-sort="namaBulan">Nama Bulan</a></th>
+                <th><a class="fa fa-fw fa-sort"><a class="sorted"  sd:pagination-sort="namaBulan">Nama Bulan</a></th>
                 <th>&nbsp;</th>
               </tr>
               </thead>
               <tbody>
               <tr th:each="laporan, iter : ${listCabang}">
                 <td th:text="${iter.count}">1</td>
-                <td th:text="${laporan.bulan}">Nama Bulan</td>
+                <td th:text="${laporan}">Nama Bulan</td>
                 <td>
-                  <a href="#" class="btn btn-default" th:href="@{/bulanan/{bulan}(bulan=${laporan.bulan})}"
+                  <a href="#" class="btn btn-default" th:href="@{/bulanan/{bulan}(bulan=${laporan})}"
                      title="View Data"><span>VIEW</span></a>
-                  <a href="#" class="btn btn-primary" th:href="@{/downloadBulanan(bulan=${laporan.bulan})}"
+                  <a href="#" class="btn btn-primary" th:href="@{/downloadBulanan(bulan=${laporan})}"
                      title="Download Data"><span>DOWNLOAD</span></a>
                 </td>
               </tr>

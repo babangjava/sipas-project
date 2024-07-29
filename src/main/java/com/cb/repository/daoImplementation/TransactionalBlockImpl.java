@@ -17,11 +17,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 @Transactional(readOnly = false)
@@ -129,15 +127,8 @@ public class TransactionalBlockImpl implements TransactionalBlock {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<LaporanCabang> laporanKeuntunganBulanan(int bulan, Pageable pageable) {
-        YearMonth yearMonth = YearMonth.now(); // For the current month
-        LocalDate startOfMonth = yearMonth.atDay(1);
-        LocalDate endOfMonth = yearMonth.atEndOfMonth();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String startOfMonthString = startOfMonth.format(formatter);
-        String endOfMonthString = endOfMonth.format(formatter);
-
-        String sql = "SELECT nama_cabang, CAST(tgl_transaksi AS DATE) as tgl_transaksi FROM transaksi_bahan_baku_cabang WHERE CAST(tgl_transaksi AS DATE) BETWEEN '" + startOfMonthString + "' AND '" + endOfMonthString + "' GROUP BY nama_cabang, CAST(tgl_transaksi AS DATE) ORDER BY nama_cabang ASC, tgl_transaksi ASC";
+    public Page<LaporanCabang> laporanKeuntunganBulanan(String bulan, Pageable pageable) {
+       String sql = "SELECT nama_cabang, tgl_transaksi FROM transaksi_bahan_baku_cabang WHERE TO_CHAR(tgl_transaksi, 'YYYY-MM')='"+bulan+"' GROUP BY nama_cabang, tgl_transaksi ORDER BY nama_cabang ASC";
 
         List<LaporanCabang> laporanCabangHeaders = jdbcTemplate.query(sql, (rs, rowNum) -> new LaporanCabang(rs.getString("nama_cabang"), rs.getDate("tgl_transaksi").toLocalDate()));
         for (LaporanCabang item : laporanCabangHeaders) {
@@ -168,43 +159,10 @@ public class TransactionalBlockImpl implements TransactionalBlock {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<LaporanCabang> laporanKeuntunganBulananShort(Pageable pageable) {
-        LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1);
-        LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
-
-        String sql = "SELECT DISTINCT EXTRACT(MONTH FROM tgl_transaksi) AS bulan " +
-                "FROM transaksi_bahan_baku_cabang " +
-                "WHERE EXTRACT(YEAR FROM tgl_transaksi) = EXTRACT(YEAR FROM CURRENT_DATE) " +
-                "ORDER BY bulan";
-
-        List<Integer> bulanList = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("bulan"));
-
-        List<LaporanCabang> laporanCabangHeaders = new ArrayList<>();
-
-        for (int bulan : bulanList) {
-            LocalDate startOfSpecificMonth = LocalDate.now().withMonth(bulan).withDayOfMonth(1);
-            LocalDate endOfSpecificMonth = startOfSpecificMonth.withDayOfMonth(startOfSpecificMonth.lengthOfMonth());
-
-            String reportSql = "SELECT nama_cabang, SUM(total) AS total_bahan_baku, " +
-                    "SUM(total) AS total_pengeluaran " +
-                    "FROM transaksi_bahan_baku_cabang " +
-                    "WHERE tgl_transaksi BETWEEN ? AND ? " +
-                    "GROUP BY nama_cabang";
-
-            List<LaporanCabang> laporanCabangs = jdbcTemplate.query(reportSql, new Object[]{startOfSpecificMonth, endOfSpecificMonth},
-                    (rs, rowNum) -> {
-                        String namaCabang = rs.getString("nama_cabang");
-                        Double totalBahanBaku = rs.getDouble("total_bahan_baku");
-                        Double totalPengeluaran = rs.getDouble("total_pengeluaran");
-                        Double keuntungan = totalBahanBaku - totalPengeluaran;
-
-                        return new LaporanCabang(namaCabang, startOfSpecificMonth);
-                    });
-
-            laporanCabangHeaders.addAll(laporanCabangs);
-        }
-
-        return new PageImpl<>(laporanCabangHeaders, pageable, laporanCabangHeaders.size());
+    public Page<String> laporanKeuntunganBulananShort(Pageable pageable) {
+        String sql = "SELECT TO_CHAR(tgl_transaksi, 'YYYY-MM') AS bulan FROM transaksi_bahan_baku_cabang GROUP BY bulan ORDER BY bulan DESC";
+        List<String> bulanList = (List<String>) jdbcTemplate.query(sql, (rs, rowNum) -> rs.getString("bulan"));
+        return new PageImpl<>(bulanList, pageable, bulanList.size());
     }
 
 

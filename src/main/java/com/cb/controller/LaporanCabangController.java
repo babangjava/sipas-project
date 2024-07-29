@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.Month;
-import java.util.*;
 
 @Controller
 public class LaporanCabangController {
@@ -45,26 +44,9 @@ public class LaporanCabangController {
     @GetMapping("laporan-cabang/bulan")
     public ModelMap laporanBulananShort(@PageableDefault(size = 10) Pageable pageable, Model model) {
         ModelMap modelMap = new ModelMap();
-        Page<LaporanCabang> laporanCabangs = transactionalBlock.laporanKeuntunganBulananShort(pageable);
+        Page<String> laporanCabangs = transactionalBlock.laporanKeuntunganBulananShort(pageable);
         modelMap.addAttribute("listCabang", laporanCabangs);
         return modelMap;
-    }
-
-    private static final Map<String, String> bulanMap = new HashMap<>();
-
-    static {
-        bulanMap.put("Januari", "JANUARY");
-        bulanMap.put("Februari", "FEBRUARY");
-        bulanMap.put("Maret", "MARCH");
-        bulanMap.put("April", "APRIL");
-        bulanMap.put("Mei", "MAY");
-        bulanMap.put("Juni", "JUNE");
-        bulanMap.put("Juli", "JULY");
-        bulanMap.put("Agustus", "AUGUST");
-        bulanMap.put("September", "SEPTEMBER");
-        bulanMap.put("Oktober", "OCTOBER");
-        bulanMap.put("November", "NOVEMBER");
-        bulanMap.put("Desember", "DECEMBER");
     }
 
     @GetMapping("/bulanan/{bulan}")
@@ -72,21 +54,9 @@ public class LaporanCabangController {
                               @RequestParam(defaultValue = "0") int page,
                               @RequestParam(defaultValue = "10") int size,
                               ModelMap modelMap) {
-        int bulanNumber;
-        try {
-            String bulanInggris = bulanMap.getOrDefault(bulan, null);
-            if (bulanInggris == null) {
-                throw new IllegalArgumentException("Invalid month: " + bulan);
-            }
-            bulanNumber = Month.valueOf(bulanInggris).getValue();
-        } catch (IllegalArgumentException e) {
-            modelMap.addAttribute("errorMessage", "Invalid month: " + bulan);
-            return "laporan-cabang/bulanan";
-        }
-
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<LaporanCabang> laporanDetails = transactionalBlock.laporanKeuntunganBulanan(bulanNumber, pageable);
+        Page<LaporanCabang> laporanDetails = transactionalBlock.laporanKeuntunganBulanan(bulan, pageable);
 
         modelMap.addAttribute("listCabang", laporanDetails);
 
@@ -95,18 +65,8 @@ public class LaporanCabangController {
 
     @GetMapping("/downloadBulanan")
     public ResponseEntity<byte[]> downloadBulanan(@RequestParam("bulan") String bulan) {
-        int bulanNumber;
-        try {
-            String bulanInggris = bulanMap.getOrDefault(bulan, null);
-            if (bulanInggris == null) {
-                throw new IllegalArgumentException("Invalid month: " + bulan);
-            }
-            bulanNumber = Month.valueOf(bulanInggris).getValue();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
 
-        Page<LaporanCabang> laporanDetails = transactionalBlock.laporanKeuntunganBulanan(bulanNumber, PageRequest.of(0, Integer.MAX_VALUE));
+        Page<LaporanCabang> laporanDetails = transactionalBlock.laporanKeuntunganBulanan(bulan, PageRequest.of(0, Integer.MAX_VALUE));
 
         try (XSSFWorkbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Keuntungan Bulanan");
@@ -123,7 +83,7 @@ public class LaporanCabangController {
             for (LaporanCabang laporan : laporanDetails) {
                 Row row = sheet.createRow(rowNum++);
                 row.createCell(0).setCellValue(rowNum - 1);
-                row.createCell(1).setCellValue(laporan.getBulan());
+                row.createCell(1).setCellValue(laporan.getTglTransaksi());
                 row.createCell(2).setCellValue(laporan.getTotalBahanBaku());
                 row.createCell(3).setCellValue(laporan.getTotalOmzet());
                 row.createCell(4).setCellValue(laporan.getTotalPengeluaran());
@@ -135,7 +95,7 @@ public class LaporanCabangController {
             byte[] bytes = out.toByteArray();
 
             HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Disposition", "attachment; filename=KeuntunganBulanan.xlsx");
+            headers.add("Content-Disposition", "attachment; filename=KeuntunganBulanan_"+bulan+".xlsx");
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
             return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
