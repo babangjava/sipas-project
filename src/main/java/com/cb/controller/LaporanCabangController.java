@@ -73,7 +73,7 @@ public class LaporanCabangController {
 
             Row header = sheet.createRow(0);
             header.createCell(0).setCellValue("No");
-            header.createCell(1).setCellValue("Nama Bulan");
+            header.createCell(1).setCellValue("Nama Cabang");
             header.createCell(2).setCellValue("Total Bahan Baku");
             header.createCell(3).setCellValue("Total Omzet");
             header.createCell(4).setCellValue("Total Pengeluaran");
@@ -83,7 +83,7 @@ public class LaporanCabangController {
             for (LaporanCabang laporan : laporanDetails) {
                 Row row = sheet.createRow(rowNum++);
                 row.createCell(0).setCellValue(rowNum - 1);
-                row.createCell(1).setCellValue(laporan.getTglTransaksi());
+                row.createCell(1).setCellValue(laporan.getNamaCabang());
                 row.createCell(2).setCellValue(laporan.getTotalBahanBaku());
                 row.createCell(3).setCellValue(laporan.getTotalOmzet());
                 row.createCell(4).setCellValue(laporan.getTotalPengeluaran());

@@ -31,13 +31,10 @@ public class TransaksiOmzetController {
 
     @GetMapping("/transaksi/omzet/list")
     public ModelMap cabang(Principal principal, @PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model){
-        if (value != null) {
-            model.addAttribute("key", value);
-            return new ModelMap().addAttribute("transaksiOmzet", transaksiOmzetRepository.findByNamaCabangContainingIgnoreCaseOrderByTglTransaksiDesc(value, pageable));
-        } else {
-            String namaCabangByEmail = getNamaCabangByEmail(principal);
-            return new ModelMap().addAttribute("transaksiOmzet", transaksiOmzetRepository.findByNamaCabangContainingIgnoreCaseOrderByTglTransaksiDesc(namaCabangByEmail,pageable));
-        }
+        LocalDate now = LocalDate.now();
+        String namaCabangByEmail = getNamaCabangByEmail(principal);
+        return new ModelMap().addAttribute("transaksiOmzet", transaksiOmzetRepository.findByNamaCabangContainingIgnoreCaseAndTglTransaksiBetweenOrderByTglTransaksiDesc(namaCabangByEmail,now,now, pageable));
+
     }
 
     @GetMapping("/transaksi/omzet/form")
