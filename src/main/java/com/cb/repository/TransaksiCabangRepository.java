@@ -7,8 +7,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+
 @Repository
 public interface TransaksiCabangRepository extends CrudRepository<TransaksiBahanBakuCabang, Long>, PagingAndSortingRepository<TransaksiBahanBakuCabang, Long> {
-    Page<TransaksiBahanBakuCabang> findByNamaCabangContainingIgnoreCaseOrderByTglTransaksiDesc(String name, Pageable pageable);
-    Page<TransaksiBahanBakuCabang> findAllByOrderByTglTransaksiDesc(Pageable pageable);
+    Page<TransaksiBahanBakuCabang> findByNamaCabangContainingIgnoreCaseAndTglTransaksiBetweenOrderByTglTransaksiDesc(String name, LocalDate to, LocalDate from, Pageable pageable);
 }

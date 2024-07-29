@@ -31,13 +31,9 @@ public class PengeluaranController {
 
     @GetMapping("/transaksi/pengeluaran/list")
     public ModelMap cabang(Principal principal, @PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model){
-        if (value != null) {
-            model.addAttribute("key", value);
-            return new ModelMap().addAttribute("pengeluaran", pengeluaranRepository.findByNamaCabangContainingIgnoreCaseOrderByTglTransaksiDesc(value, pageable));
-        } else {
-            String namaCabangByEmail = getNamaCabangByEmail(principal);
-            return new ModelMap().addAttribute("pengeluaran", pengeluaranRepository.findByNamaCabangContainingIgnoreCaseOrderByTglTransaksiDesc(namaCabangByEmail,pageable));
-        }
+        LocalDate now = LocalDate.now();
+        String namaCabangByEmail = getNamaCabangByEmail(principal);
+        return new ModelMap().addAttribute("pengeluaran", pengeluaranRepository.findByNamaCabangContainingIgnoreCaseAndTglTransaksiBetweenOrderByTglTransaksiDesc(namaCabangByEmail,now,now,pageable));
     }
 
     @GetMapping("/transaksi/pengeluaran/form")

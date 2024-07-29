@@ -39,18 +39,14 @@ public class TransaksiCabangController {
     private TransactionalBlock transactionalBlock;
 
     @GetMapping("/transaksi/cabang/list")
-    public ModelMap cabang(Principal principal, @PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model){
-        if (value != null) {
-            model.addAttribute("key", value);
-            return new ModelMap().addAttribute("transaksiCabang", transaksiCabangRepository.findByNamaCabangContainingIgnoreCaseOrderByTglTransaksiDesc(value, pageable));
-        } else {
-            String namaCabangByEmail = getNamaCabangByEmail(principal);
-            return new ModelMap().addAttribute("transaksiCabang", transaksiCabangRepository.findByNamaCabangContainingIgnoreCaseOrderByTglTransaksiDesc(namaCabangByEmail,pageable));
-        }
+    public ModelMap cabang(Principal principal, @PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model) {
+        String namaCabangByEmail = getNamaCabangByEmail(principal);
+        LocalDate now = LocalDate.now();
+        return new ModelMap().addAttribute("transaksiCabang", transaksiCabangRepository.findByNamaCabangContainingIgnoreCaseAndTglTransaksiBetweenOrderByTglTransaksiDesc(namaCabangByEmail, now, now, pageable));
     }
 
     @GetMapping("/transaksi/cabang/form")
-    public ModelMap tampilkanForm(Principal principal, @RequestParam(value = "id", required = false) TransaksiBahanBakuCabang transaksiBahanBakuCabang , Model model) {
+    public ModelMap tampilkanForm(Principal principal, @RequestParam(value = "id", required = false) TransaksiBahanBakuCabang transaksiBahanBakuCabang, Model model) {
         if (transaksiBahanBakuCabang == null) {
             transaksiBahanBakuCabang = new TransaksiBahanBakuCabang();
             transaksiBahanBakuCabang.setTglTransaksi(LocalDate.now());
@@ -71,7 +67,7 @@ public class TransaksiCabangController {
     }
 
     @PostMapping("/transaksi/cabang/form")
-    public String simpan(@Valid @ModelAttribute("transaksiCabang") TransaksiBahanBakuCabang transaksiBahanBakuCabang , BindingResult errors, SessionStatus status) {
+    public String simpan(@Valid @ModelAttribute("transaksiCabang") TransaksiBahanBakuCabang transaksiBahanBakuCabang, BindingResult errors, SessionStatus status) {
         if (errors.hasErrors()) {
             return "transaksi/cabang/form";
         }
@@ -81,12 +77,13 @@ public class TransaksiCabangController {
     }
 
     @GetMapping("/transaksi/cabang/delete")
-    public ModelMap deleteConfirm(Principal principal, @RequestParam(value = "id", required = true) TransaksiBahanBakuCabang transaksiBahanBakuCabang ) {
+    public ModelMap deleteConfirm(Principal principal, @RequestParam(value = "id", required = true) TransaksiBahanBakuCabang transaksiBahanBakuCabang) {
         return new ModelMap("transaksiCabang", transaksiBahanBakuCabang);
     }
+
     @PostMapping("/transaksi/cabang/delete")
-    public Object delete(@ModelAttribute TransaksiBahanBakuCabang transaksiBahanBakuCabang , SessionStatus status) {
-        try{
+    public Object delete(@ModelAttribute TransaksiBahanBakuCabang transaksiBahanBakuCabang, SessionStatus status) {
+        try {
             transaksiCabangRepository.delete(transaksiBahanBakuCabang);
         } catch (DataIntegrityViolationException exception) {
             status.setComplete();
@@ -94,7 +91,7 @@ public class TransaksiCabangController {
                     .addObject("entityId", transaksiBahanBakuCabang.getNamaCabang())
                     .addObject("entityName", "transaksiCabang")
                     .addObject("errorCause", exception.getRootCause().getMessage())
-                    .addObject("backLink","/transaksi/cabang/list");
+                    .addObject("backLink", "/transaksi/cabang/list");
         }
         status.setComplete();
         return "redirect:/transaksi/cabang/list";
@@ -108,7 +105,7 @@ public class TransaksiCabangController {
 
     private String getNamaCabangByEmail(Principal principal) {
         String email = principal.getName();
-        String namaCabang  = cabangRepository.findByEmail(email).getNamaCabang();
+        String namaCabang = cabangRepository.findByEmail(email).getNamaCabang();
         return namaCabang;
     }
 }
