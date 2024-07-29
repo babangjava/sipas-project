@@ -17,9 +17,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional(readOnly = false)
@@ -33,22 +35,22 @@ public class TransactionalBlockImpl implements TransactionalBlock {
 
     @Override
     public TransaksiBahanBakuCabang saveTransactionBahanBaku(TransaksiBahanBakuCabang obj) {
-        List<TransaksiBahanBakuCabang> transaksiBahanBakuCabangList =new ArrayList<TransaksiBahanBakuCabang>();
+        List<TransaksiBahanBakuCabang> transaksiBahanBakuCabangList = new ArrayList<>();
         for (BahanBaku item : obj.getBahanBakuList()) {
-            TransaksiBahanBakuCabang transaksiBahanBakuCabang =new TransaksiBahanBakuCabang();
+            TransaksiBahanBakuCabang transaksiBahanBakuCabang = new TransaksiBahanBakuCabang();
             transaksiBahanBakuCabang.setId(null);
             transaksiBahanBakuCabang.setTglTransaksi(obj.getTglTransaksi());
             transaksiBahanBakuCabang.setNamaGudang(obj.getNamaGudang());
             transaksiBahanBakuCabang.setNamaCabang(obj.getNamaCabang());
-            //setup nbahan
+            // setup nbahan
             transaksiBahanBakuCabang.setNamaBahan(item.getNamaBahan());
             transaksiBahanBakuCabang.setType(item.getType());
             transaksiBahanBakuCabang.setHarga(item.getHarga());
             transaksiBahanBakuCabang.setQty(item.getQty());
-            transaksiBahanBakuCabang.setTotal(item.getQty()*item.getHarga());
-            //untuk mengurangi stok otomatis
+            transaksiBahanBakuCabang.setTotal(item.getQty() * item.getHarga());
+            // untuk mengurangi stok otomatis
             StokBarang stokBarang = stokBarangRepository.findByNamaGudangAndNamaBahanContainingIgnoreCase(obj.getNamaGudang(), item.getNamaBahan());
-            stokBarang.setStok(stokBarang.getStok()-item.getQty());
+            stokBarang.setStok(stokBarang.getStok() - item.getQty());
             stokBarangRepository.save(stokBarang);
 
             transaksiBahanBakuCabangList.add(transaksiBahanBakuCabang);
@@ -60,27 +62,27 @@ public class TransactionalBlockImpl implements TransactionalBlock {
 
     @Override
     public Gudang saveTransactionBahanBaku(Gudang obj) {
-        List<StokBarang> stokBarangList =new ArrayList<StokBarang>();
+        List<StokBarang> stokBarangList = new ArrayList<>();
         for (BahanBaku item : obj.getBahanBakuList()) {
-            if(item.getQty()!=0){
+            if (item.getQty() != 0) {
                 StokBarang stokBarang = stokBarangRepository.findByNamaGudangAndNamaBahanContainingIgnoreCase(obj.getNamaGudang(), item.getNamaBahan());
-                if(stokBarang==null){
+                if (stokBarang == null) {
                     stokBarang = new StokBarang();
                     stokBarang.setId(null);
                 }
                 stokBarang.setTglTransaksi(LocalDate.now());
                 stokBarang.setNamaGudang(obj.getNamaGudang());
-                //setup nbahan
+                // setup nbahan
                 stokBarang.setNamaBahan(item.getNamaBahan());
                 stokBarang.setType(item.getType());
                 stokBarang.setHarga(item.getHarga());
                 stokBarang.setQty(item.getQty());
 
                 Integer stokBarangTerakhir = stokBarangRepository.getStokBarangTerakhir(obj.getNamaGudang(), item.getNamaBahan());
-                if(stokBarangTerakhir==null){
-                    stokBarangTerakhir=0;
+                if (stokBarangTerakhir == null) {
+                    stokBarangTerakhir = 0;
                 }
-                stokBarang.setStok(item.getQty()+ stokBarangTerakhir);
+                stokBarang.setStok(item.getQty() + stokBarangTerakhir);
 
                 stokBarangList.add(stokBarang);
             }
@@ -89,41 +91,122 @@ public class TransactionalBlockImpl implements TransactionalBlock {
         return obj;
     }
 
-
     @Override
     @Transactional(readOnly = true)
     public Page<LaporanCabang> laporanKeuntunganHarian(Pageable pageable) {
-        LocalDate localDate = LocalDate.now();//For reference
+        LocalDate localDate = LocalDate.now(); // For reference
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedString = localDate.format(formatter);
 
-        String sql = "SELECT nama_cabang, tgl_transaksi FROM transaksi_bahan_baku_cabang WHERE CAST(tgl_transaksi AS DATE)='"+formattedString+"' GROUP BY nama_cabang,tgl_transaksi ORDER BY nama_cabang ASC";
+        String sql = "SELECT nama_cabang, tgl_transaksi FROM transaksi_bahan_baku_cabang WHERE CAST(tgl_transaksi AS DATE)='" + formattedString + "' GROUP BY nama_cabang, tgl_transaksi ORDER BY nama_cabang ASC";
 
-        List<LaporanCabang> laporanCabangHeaders = jdbcTemplate.query(sql, (rs, rowNum) -> new LaporanCabang(rs.getString("nama_cabang"),rs.getDate("tgl_transaksi").toLocalDate()));
+        List<LaporanCabang> laporanCabangHeaders = jdbcTemplate.query(sql, (rs, rowNum) -> new LaporanCabang(rs.getString("nama_cabang"), rs.getDate("tgl_transaksi").toLocalDate()));
         for (LaporanCabang item : laporanCabangHeaders) {
-            Double totalTransaksiBahanBaku = jdbcTemplate.queryForObject("SELECT SUM(total) FROM transaksi_bahan_baku_cabang where nama_cabang='"+item.getNamaCabang()+"' AND CAST(tgl_transaksi AS DATE)='"+formattedString+"'", Double.class);
-            if(totalTransaksiBahanBaku==null){
-                totalTransaksiBahanBaku=0.0;
+            Double totalTransaksiBahanBaku = jdbcTemplate.queryForObject("SELECT SUM(total) FROM transaksi_bahan_baku_cabang where nama_cabang='" + item.getNamaCabang() + "' AND CAST(tgl_transaksi AS DATE)='" + formattedString + "'", Double.class);
+            if (totalTransaksiBahanBaku == null) {
+                totalTransaksiBahanBaku = 0.0;
             }
-            Double totalTransaksiOmzet = jdbcTemplate.queryForObject("SELECT SUM(omzet) FROM omzet_cabang where nama_cabang='"+item.getNamaCabang()+"' AND CAST(tgl_transaksi AS DATE)='"+formattedString+"'", Double.class);
-            if(totalTransaksiOmzet==null){
-                totalTransaksiOmzet=0.0;
+            Double totalTransaksiOmzet = jdbcTemplate.queryForObject("SELECT SUM(omzet) FROM omzet_cabang where nama_cabang='" + item.getNamaCabang() + "' AND CAST(tgl_transaksi AS DATE)='" + formattedString + "'", Double.class);
+            if (totalTransaksiOmzet == null) {
+                totalTransaksiOmzet = 0.0;
             }
-            Double totalTransaksiPengeluaran = jdbcTemplate.queryForObject("SELECT SUM(harga) FROM pengeluaran_cabang where nama_cabang='"+item.getNamaCabang()+"' AND CAST(tgl_transaksi AS DATE)='"+formattedString+"'", Double.class);
-            if(totalTransaksiPengeluaran==null){
-                totalTransaksiPengeluaran=0.0;
+            Double totalTransaksiPengeluaran = jdbcTemplate.queryForObject("SELECT SUM(harga) FROM pengeluaran_cabang where nama_cabang='" + item.getNamaCabang() + "' AND CAST(tgl_transaksi AS DATE)='" + formattedString + "'", Double.class);
+            if (totalTransaksiPengeluaran == null) {
+                totalTransaksiPengeluaran = 0.0;
             }
             item.setTotalPengeluaran(totalTransaksiPengeluaran);
             item.setTotalOmzet(totalTransaksiOmzet);
             item.setTotalBahanBaku(totalTransaksiBahanBaku);
 
             Double keuntungan = 0.0;
-            if(totalTransaksiOmzet!=0.0){
+            if (totalTransaksiOmzet != 0.0) {
                 keuntungan = item.getTotalOmzet() - item.getTotalBahanBaku();
             }
             item.setKeuntungan(keuntungan);
         }
-        Page<LaporanCabang> page = new PageImpl<>(laporanCabangHeaders);
-        return page;
+        return new PageImpl<>(laporanCabangHeaders, pageable, laporanCabangHeaders.size());
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<LaporanCabang> laporanKeuntunganBulanan(int bulan, Pageable pageable) {
+        YearMonth yearMonth = YearMonth.now(); // For the current month
+        LocalDate startOfMonth = yearMonth.atDay(1);
+        LocalDate endOfMonth = yearMonth.atEndOfMonth();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String startOfMonthString = startOfMonth.format(formatter);
+        String endOfMonthString = endOfMonth.format(formatter);
+
+        String sql = "SELECT nama_cabang, CAST(tgl_transaksi AS DATE) as tgl_transaksi FROM transaksi_bahan_baku_cabang WHERE CAST(tgl_transaksi AS DATE) BETWEEN '" + startOfMonthString + "' AND '" + endOfMonthString + "' GROUP BY nama_cabang, CAST(tgl_transaksi AS DATE) ORDER BY nama_cabang ASC, tgl_transaksi ASC";
+
+        List<LaporanCabang> laporanCabangHeaders = jdbcTemplate.query(sql, (rs, rowNum) -> new LaporanCabang(rs.getString("nama_cabang"), rs.getDate("tgl_transaksi").toLocalDate()));
+        for (LaporanCabang item : laporanCabangHeaders) {
+            Double totalTransaksiBahanBaku = jdbcTemplate.queryForObject("SELECT SUM(total) FROM transaksi_bahan_baku_cabang where nama_cabang='" + item.getNamaCabang() + "' AND CAST(tgl_transaksi AS DATE)='" + item.getTglTransaksi() + "'", Double.class);
+            if (totalTransaksiBahanBaku == null) {
+                totalTransaksiBahanBaku = 0.0;
+            }
+            Double totalTransaksiOmzet = jdbcTemplate.queryForObject("SELECT SUM(omzet) FROM omzet_cabang where nama_cabang='" + item.getNamaCabang() + "' AND CAST(tgl_transaksi AS DATE)='" + item.getTglTransaksi() + "'", Double.class);
+            if (totalTransaksiOmzet == null) {
+                totalTransaksiOmzet = 0.0;
+            }
+            Double totalTransaksiPengeluaran = jdbcTemplate.queryForObject("SELECT SUM(harga) FROM pengeluaran_cabang where nama_cabang='" + item.getNamaCabang() + "' AND CAST(tgl_transaksi AS DATE)='" + item.getTglTransaksi() + "'", Double.class);
+            if (totalTransaksiPengeluaran == null) {
+                totalTransaksiPengeluaran = 0.0;
+            }
+            item.setTotalPengeluaran(totalTransaksiPengeluaran);
+            item.setTotalOmzet(totalTransaksiOmzet);
+            item.setTotalBahanBaku(totalTransaksiBahanBaku);
+
+            Double keuntungan = 0.0;
+            if (totalTransaksiOmzet != 0.0) {
+                keuntungan = item.getTotalOmzet() - item.getTotalBahanBaku();
+            }
+            item.setKeuntungan(keuntungan);
+        }
+        return new PageImpl<>(laporanCabangHeaders, pageable, laporanCabangHeaders.size());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<LaporanCabang> laporanKeuntunganBulananShort(Pageable pageable) {
+        LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1);
+        LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
+
+        String sql = "SELECT DISTINCT EXTRACT(MONTH FROM tgl_transaksi) AS bulan " +
+                "FROM transaksi_bahan_baku_cabang " +
+                "WHERE EXTRACT(YEAR FROM tgl_transaksi) = EXTRACT(YEAR FROM CURRENT_DATE) " +
+                "ORDER BY bulan";
+
+        List<Integer> bulanList = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("bulan"));
+
+        List<LaporanCabang> laporanCabangHeaders = new ArrayList<>();
+
+        for (int bulan : bulanList) {
+            LocalDate startOfSpecificMonth = LocalDate.now().withMonth(bulan).withDayOfMonth(1);
+            LocalDate endOfSpecificMonth = startOfSpecificMonth.withDayOfMonth(startOfSpecificMonth.lengthOfMonth());
+
+            String reportSql = "SELECT nama_cabang, SUM(total) AS total_bahan_baku, " +
+                    "SUM(total) AS total_pengeluaran " +
+                    "FROM transaksi_bahan_baku_cabang " +
+                    "WHERE tgl_transaksi BETWEEN ? AND ? " +
+                    "GROUP BY nama_cabang";
+
+            List<LaporanCabang> laporanCabangs = jdbcTemplate.query(reportSql, new Object[]{startOfSpecificMonth, endOfSpecificMonth},
+                    (rs, rowNum) -> {
+                        String namaCabang = rs.getString("nama_cabang");
+                        Double totalBahanBaku = rs.getDouble("total_bahan_baku");
+                        Double totalPengeluaran = rs.getDouble("total_pengeluaran");
+                        Double keuntungan = totalBahanBaku - totalPengeluaran;
+
+                        return new LaporanCabang(namaCabang, startOfSpecificMonth);
+                    });
+
+            laporanCabangHeaders.addAll(laporanCabangs);
+        }
+
+        return new PageImpl<>(laporanCabangHeaders, pageable, laporanCabangHeaders.size());
+    }
+
+
+
 }

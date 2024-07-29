@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:sd="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
+<head>
+  <title>Keuntungan Bulanan</title>
+</head>
+<body>
+<div layout:fragment="breadcrumb">
+  <h1>Keuntungan Bulanan</h1>
+</div>
+<div layout:fragment="content">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box box-primary">
+        <div class="box-header with-border"></div>
+        <!-- /.box-header -->
+        <div class="box-body">
+          Show <span sd:page-size-selector="javascript"></span> entries
+
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+              <thead>
+              <tr>
+                <th>No</th>
+                <th><a class="fa fa-fw fa-sort sorted" sd:pagination-sort="namaBulan">Nama Bulan</a></th>
+                <th>&nbsp;</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:each="laporan, iter : ${listCabang}">
+                <td th:text="${iter.count}">1</td>
+                <td th:text="${laporan.bulan}">Nama Bulan</td>
+                <td>
+                  <a href="#" class="btn btn-default" th:href="@{/bulanan/{bulan}(bulan=${laporan.bulan})}"
+                     title="View Data"><span>VIEW</span></a>
+                  <a href="#" class="btn btn-primary" th:href="@{/downloadBulanan(bulan=${laporan.bulan})}"
+                     title="Download Data"><span>DOWNLOAD</span></a>
+                </td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(listCabang)}">
+                <td colspan="3" class="text-center">Data tidak ditemukan</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div th:if="${not #lists.isEmpty(listCabang)}">
+          <div sd:pagination-summary="">info</div>
+          <div class="text-center">
+            <nav>
+              <ul class="pagination" sd:pagination="full">
+                <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                <li class="disabled"><a href="#" aria-label="Previous"><span
+                        aria-hidden="true">&laquo;</span></a></li>
+                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
