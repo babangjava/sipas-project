@@ -1,6 +1,7 @@
 package com.cb.repository.dao;
 
 import com.cb.dto.LaporanCabang;
+import com.cb.model.BahanBakuTerpakai;
 import com.cb.model.Gudang;
 import com.cb.model.TransaksiBahanBakuCabang;
 import org.springframework.data.domain.Page;
@@ -13,5 +14,6 @@ public interface TransactionalBlock {
     Page<LaporanCabang> laporanKeuntunganHarian(Pageable pageable);
     Page<LaporanCabang> laporanKeuntunganBulanan(String bulan, Pageable pageable);
     Page<String> laporanKeuntunganBulananShort(Pageable pageable);
+    BahanBakuTerpakai saveTransactionBahanTerpakai(BahanBakuTerpakai obj);
 
 }

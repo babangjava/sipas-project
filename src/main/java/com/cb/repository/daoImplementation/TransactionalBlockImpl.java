@@ -1,10 +1,9 @@
 package com.cb.repository.daoImplementation;
 
 import com.cb.dto.LaporanCabang;
-import com.cb.model.BahanBaku;
-import com.cb.model.Gudang;
-import com.cb.model.StokBarang;
-import com.cb.model.TransaksiBahanBakuCabang;
+import com.cb.model.*;
+import com.cb.repository.BahanBakuRepository;
+import com.cb.repository.BahanTerpakaiRepository;
 import com.cb.repository.StokBarangRepository;
 import com.cb.repository.TransaksiCabangRepository;
 import com.cb.repository.dao.TransactionalBlock;
@@ -30,28 +29,32 @@ public class TransactionalBlockImpl implements TransactionalBlock {
     private TransaksiCabangRepository transaksiCabangRepository;
     @Autowired
     private StokBarangRepository stokBarangRepository;
+    @Autowired
+    private BahanTerpakaiRepository bahanTerpakaiRepository;
 
     @Override
     public TransaksiBahanBakuCabang saveTransactionBahanBaku(TransaksiBahanBakuCabang obj) {
         List<TransaksiBahanBakuCabang> transaksiBahanBakuCabangList = new ArrayList<>();
         for (BahanBaku item : obj.getBahanBakuList()) {
-            TransaksiBahanBakuCabang transaksiBahanBakuCabang = new TransaksiBahanBakuCabang();
-            transaksiBahanBakuCabang.setId(null);
-            transaksiBahanBakuCabang.setTglTransaksi(obj.getTglTransaksi());
-            transaksiBahanBakuCabang.setNamaGudang(obj.getNamaGudang());
-            transaksiBahanBakuCabang.setNamaCabang(obj.getNamaCabang());
-            // setup nbahan
-            transaksiBahanBakuCabang.setNamaBahan(item.getNamaBahan());
-            transaksiBahanBakuCabang.setType(item.getType());
-            transaksiBahanBakuCabang.setHarga(item.getHarga());
-            transaksiBahanBakuCabang.setQty(item.getQty());
-            transaksiBahanBakuCabang.setTotal(item.getQty() * item.getHarga());
-            // untuk mengurangi stok otomatis
-            StokBarang stokBarang = stokBarangRepository.findByNamaGudangAndNamaBahanContainingIgnoreCase(obj.getNamaGudang(), item.getNamaBahan());
-            stokBarang.setStok(stokBarang.getStok() - item.getQty());
-            stokBarangRepository.save(stokBarang);
+            if(item.getQty()!=0){
+                TransaksiBahanBakuCabang transaksiBahanBakuCabang = new TransaksiBahanBakuCabang();
+                transaksiBahanBakuCabang.setId(null);
+                transaksiBahanBakuCabang.setTglTransaksi(obj.getTglTransaksi());
+                transaksiBahanBakuCabang.setNamaGudang(obj.getNamaGudang());
+                transaksiBahanBakuCabang.setNamaCabang(obj.getNamaCabang());
+                // setup nbahan
+                transaksiBahanBakuCabang.setNamaBahan(item.getNamaBahan());
+                transaksiBahanBakuCabang.setType(item.getType());
+                transaksiBahanBakuCabang.setHarga(item.getHarga());
+                transaksiBahanBakuCabang.setQty(item.getQty());
+                transaksiBahanBakuCabang.setTotal(item.getQty() * item.getHarga());
+                // untuk mengurangi stok otomatis
+                StokBarang stokBarang = stokBarangRepository.findByNamaGudangAndNamaBahanContainingIgnoreCase(obj.getNamaGudang(), item.getNamaBahan());
+                stokBarang.setStok(stokBarang.getStok() - item.getQty());
+                stokBarangRepository.save(stokBarang);
 
-            transaksiBahanBakuCabangList.add(transaksiBahanBakuCabang);
+                transaksiBahanBakuCabangList.add(transaksiBahanBakuCabang);
+            }
         }
 
         Iterable<TransaksiBahanBakuCabang> transaksiBahanBakuCabangSaved = transaksiCabangRepository.saveAll(transaksiBahanBakuCabangList);
@@ -128,7 +131,7 @@ public class TransactionalBlockImpl implements TransactionalBlock {
     @Override
     @Transactional(readOnly = true)
     public Page<LaporanCabang> laporanKeuntunganBulanan(String bulan, Pageable pageable) {
-       String sql = "SELECT nama_cabang, tgl_transaksi FROM transaksi_bahan_baku_cabang WHERE TO_CHAR(tgl_transaksi, 'YYYY-MM')='"+bulan+"' GROUP BY nama_cabang, tgl_transaksi ORDER BY nama_cabang ASC";
+       String sql = "SELECT nama_cabang, tgl_transaksi FROM transaksi_bahan_baku_cabang WHERE TO_CHAR(tgl_transaksi, 'YYYY-MM')='"+bulan+"' GROUP BY nama_cabang, tgl_transaksi ORDER BY tgl_transaksi DESC, nama_cabang ASC";
 
         List<LaporanCabang> laporanCabangHeaders = jdbcTemplate.query(sql, (rs, rowNum) -> new LaporanCabang(rs.getString("nama_cabang"), rs.getDate("tgl_transaksi").toLocalDate()));
         for (LaporanCabang item : laporanCabangHeaders) {
@@ -155,6 +158,42 @@ public class TransactionalBlockImpl implements TransactionalBlock {
             item.setKeuntungan(keuntungan);
         }
         return new PageImpl<>(laporanCabangHeaders, pageable, laporanCabangHeaders.size());
+    }
+
+    @Override
+    public BahanBakuTerpakai saveTransactionBahanTerpakai(BahanBakuTerpakai obj) {
+        List<BahanBakuTerpakai> bahanBakuTerpakaiList = new ArrayList<>();
+
+        for (BahanBaku item : obj.getBahanBakuList()) {
+            if (item.getQty() != 0) {
+                BahanBakuTerpakai bahanBakuTerpakai = new BahanBakuTerpakai();
+                bahanBakuTerpakai.setId(null);
+                bahanBakuTerpakai.setTglTransaksi(obj.getTglTransaksi());
+                bahanBakuTerpakai.setNamaGudang(obj.getNamaGudang());
+                bahanBakuTerpakai.setNamaCabang(obj.getNamaCabang());
+                bahanBakuTerpakai.setNamaBahan(item.getNamaBahan());
+                bahanBakuTerpakai.setType(item.getType());
+                bahanBakuTerpakai.setHarga(item.getHarga());
+                bahanBakuTerpakai.setQty(item.getQty());
+                bahanBakuTerpakai.setTotal(item.getQty() * item.getHarga());
+
+                List<TransaksiBahanBakuCabang> matchingTransactions = transaksiCabangRepository.findByNamaGudangAndNamaBahan(obj.getNamaGudang(), item.getNamaBahan());
+
+                for (TransaksiBahanBakuCabang transaksiBahanBakuCabang : matchingTransactions) {
+                    int updatedQty = transaksiBahanBakuCabang.getQty() - item.getQty();
+                    transaksiBahanBakuCabang.setQty(updatedQty);
+
+                    transaksiCabangRepository.save(transaksiBahanBakuCabang);
+                }
+
+                bahanBakuTerpakaiList.add(bahanBakuTerpakai);
+            }
+        }
+
+        // Save all the BahanBakuTerpakai objects to the repository
+        bahanTerpakaiRepository.saveAll(bahanBakuTerpakaiList);
+
+        return obj;
     }
 
     @Override
