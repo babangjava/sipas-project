@@ -99,11 +99,11 @@ public class TransactionalBlockImpl implements TransactionalBlock {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedString = localDate.format(formatter);
 
-        String sql = "SELECT nama_cabang, tgl_transaksi FROM transaksi_bahan_baku_cabang WHERE CAST(tgl_transaksi AS DATE)='" + formattedString + "' GROUP BY nama_cabang, tgl_transaksi ORDER BY nama_cabang ASC";
+        String sql = "SELECT nama_cabang, tgl_transaksi FROM bahan_terpakai WHERE CAST(tgl_transaksi AS DATE)='" + formattedString + "' GROUP BY nama_cabang, tgl_transaksi ORDER BY nama_cabang ASC";
 
         List<LaporanCabang> laporanCabangHeaders = jdbcTemplate.query(sql, (rs, rowNum) -> new LaporanCabang(rs.getString("nama_cabang"), rs.getDate("tgl_transaksi").toLocalDate()));
         for (LaporanCabang item : laporanCabangHeaders) {
-            Double totalTransaksiBahanBaku = jdbcTemplate.queryForObject("SELECT SUM(total) FROM transaksi_bahan_baku_cabang where nama_cabang='" + item.getNamaCabang() + "' AND CAST(tgl_transaksi AS DATE)='" + formattedString + "'", Double.class);
+            Double totalTransaksiBahanBaku = jdbcTemplate.queryForObject("SELECT SUM(total) FROM bahan_terpakai where nama_cabang='" + item.getNamaCabang() + "' AND CAST(tgl_transaksi AS DATE)='" + formattedString + "'", Double.class);
             if (totalTransaksiBahanBaku == null) {
                 totalTransaksiBahanBaku = 0.0;
             }
@@ -131,11 +131,11 @@ public class TransactionalBlockImpl implements TransactionalBlock {
     @Override
     @Transactional(readOnly = true)
     public Page<LaporanCabang> laporanKeuntunganBulanan(String bulan, Pageable pageable) {
-       String sql = "SELECT nama_cabang, tgl_transaksi FROM transaksi_bahan_baku_cabang WHERE TO_CHAR(tgl_transaksi, 'YYYY-MM')='"+bulan+"' GROUP BY nama_cabang, tgl_transaksi ORDER BY tgl_transaksi DESC, nama_cabang ASC";
+       String sql = "SELECT nama_cabang, tgl_transaksi FROM bahan_terpakai WHERE TO_CHAR(tgl_transaksi, 'YYYY-MM')='"+bulan+"' GROUP BY nama_cabang, tgl_transaksi ORDER BY tgl_transaksi DESC, nama_cabang ASC";
 
         List<LaporanCabang> laporanCabangHeaders = jdbcTemplate.query(sql, (rs, rowNum) -> new LaporanCabang(rs.getString("nama_cabang"), rs.getDate("tgl_transaksi").toLocalDate()));
         for (LaporanCabang item : laporanCabangHeaders) {
-            Double totalTransaksiBahanBaku = jdbcTemplate.queryForObject("SELECT SUM(total) FROM transaksi_bahan_baku_cabang where nama_cabang='" + item.getNamaCabang() + "' AND CAST(tgl_transaksi AS DATE)='" + item.getTglTransaksi() + "'", Double.class);
+            Double totalTransaksiBahanBaku = jdbcTemplate.queryForObject("SELECT SUM(total) FROM bahan_terpakai where nama_cabang='" + item.getNamaCabang() + "' AND CAST(tgl_transaksi AS DATE)='" + item.getTglTransaksi() + "'", Double.class);
             if (totalTransaksiBahanBaku == null) {
                 totalTransaksiBahanBaku = 0.0;
             }
@@ -199,7 +199,7 @@ public class TransactionalBlockImpl implements TransactionalBlock {
     @Override
     @Transactional(readOnly = true)
     public Page<String> laporanKeuntunganBulananShort(Pageable pageable) {
-        String sql = "SELECT TO_CHAR(tgl_transaksi, 'YYYY-MM') AS bulan FROM transaksi_bahan_baku_cabang GROUP BY bulan ORDER BY bulan DESC";
+        String sql = "SELECT TO_CHAR(tgl_transaksi, 'YYYY-MM') AS bulan FROM bahan_terpakai GROUP BY bulan ORDER BY bulan DESC";
         List<String> bulanList = (List<String>) jdbcTemplate.query(sql, (rs, rowNum) -> rs.getString("bulan"));
         return new PageImpl<>(bulanList, pageable, bulanList.size());
     }
