@@ -38,9 +38,9 @@
                         </div>
                         <div class="form-group">
                             <label for="omzet">Omzet</label>
-                            <input type="number"
+                            <input type="text"
                                    th:field="*{omzet}"
-                                   name="omzet" class="form-control" id="omzet" placeholder="omzet" />
+                                   name="omzet" class="form-control" id="omzet" data-type="number" placeholder="omzet" />
                             <label class="control-label error-label"  th:if="${#fields.hasErrors('omzet')}"th:errors="*{omzet}">
                                 Pesan error nanti di sini
                             </label>
@@ -58,13 +58,31 @@
                             <a th:href="@{/transaksi/omzet/list}" class="btn btn-default" role="button" title="Back list">
                                 <span aria-hidden="true"></span>Batal
                             </a>
-                            <button type="submit" class="box-title btn btn-primary" title="Save Data">Simpan</button>
+                            <button type="submit" id="btn" class="box-title btn btn-primary" title="Save Data">Simpan</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+       $(document).ready(function(){
+            $("input[data-type='number']").keyup(function(event){
+              // skip for arrow keys
+              if(event.which >= 37 && event.which <= 40){
+                  event.preventDefault();
+              }
+              var $this = $(this);
+              var num = $this.val().replace(/,/gi, "");
+              var num2 = num.split(/(?=(?:\d{3})+$)/).join(",");
+              $this.val(num2);
+          });
+        });
+
+        $('#btn').click(function() {
+            $('#omzet').val($('#omzet').val().replace(",",""));
+        });
+    </script>
 </div>
 </body>
 </html>
