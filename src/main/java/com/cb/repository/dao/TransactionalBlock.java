@@ -12,6 +12,8 @@ public interface TransactionalBlock {
     TransaksiBahanBakuCabang saveTransactionBahanBaku(TransaksiBahanBakuCabang obj);
     Gudang saveTransactionBahanBaku(Gudang obj);
     Page<LaporanCabang> laporanKeuntunganHarian(Pageable pageable);
+    Page<BahanBakuTerpakai> laporanStokTerpakai(String namaCabang,Pageable pageable);
+    Page<TransaksiBahanBakuCabang> laporanStokSisa(String namaCabang,Pageable pageable);
     Page<LaporanCabang> laporanKeuntunganBulanan(String bulan, Pageable pageable);
     Page<String> laporanKeuntunganBulananShort(Pageable pageable);
     BahanBakuTerpakai saveTransactionBahanTerpakai(BahanBakuTerpakai obj);

@@ -1,6 +1,10 @@
 package com.cb.controller;
 
 import com.cb.dto.LaporanCabang;
+import com.cb.model.BahanBaku;
+import com.cb.model.BahanBakuTerpakai;
+import com.cb.model.Gudang;
+import com.cb.model.TransaksiBahanBakuCabang;
 import com.cb.repository.dao.TransactionalBlock;
 import com.cb.repository.daoImplementation.TransactionalBlockImpl;
 import org.apache.poi.ss.usermodel.Row;
@@ -24,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 public class LaporanCabangController {
@@ -32,7 +37,7 @@ public class LaporanCabangController {
     @Autowired
     private TransactionalBlockImpl transactionalBlockImpl;
 
-    @GetMapping("laporan-cabang/list")
+    @GetMapping("/laporan-cabang/list")
     public ModelMap bahanBaku(@PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model) {
         ModelMap modelMap = new ModelMap();
         Page<LaporanCabang> laporanCabangs = transactionalBlock.laporanKeuntunganHarian(pageable);
@@ -40,7 +45,25 @@ public class LaporanCabangController {
         return modelMap;
     }
 
-    @GetMapping("laporan-cabang/bulan")
+    @GetMapping("/laporan-cabang/laporan-terpakai")
+    public ModelMap stokbarangTerpakai(@PageableDefault(size = 10) Pageable pageable,
+            @RequestParam(value = "namaCabang", required = false) String namaCabang) {
+        ModelMap modelMap = new ModelMap();
+        Page<BahanBakuTerpakai> bahanTerpakai = transactionalBlock.laporanStokTerpakai(namaCabang,pageable);
+        modelMap.addAttribute("bahanTerpakai", bahanTerpakai);
+        return modelMap;
+    }
+
+    @GetMapping("/laporan-cabang/laporan-sisa")
+    public ModelMap stokbarangSisa(@PageableDefault(size = 10) Pageable pageable,
+            @RequestParam(value = "namaCabang", required = false) String namaCabang) {
+        ModelMap modelMap = new ModelMap();
+        Page<TransaksiBahanBakuCabang> bahanTerpakai = transactionalBlock.laporanStokSisa(namaCabang,pageable);
+        modelMap.addAttribute("bahanTerpakai", bahanTerpakai);
+        return modelMap;
+    }
+
+    @GetMapping("/laporan-cabang/bulan")
     public ModelMap laporanBulananShort(@PageableDefault(size = 10) Pageable pageable, Model model) {
         ModelMap modelMap = new ModelMap();
         Page<String> laporanCabangs = transactionalBlock.laporanKeuntunganBulananShort(pageable);

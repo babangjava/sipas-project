@@ -2,7 +2,6 @@ package com.cb.repository.daoImplementation;
 
 import com.cb.dto.LaporanCabang;
 import com.cb.model.*;
-import com.cb.repository.BahanBakuRepository;
 import com.cb.repository.BahanTerpakaiRepository;
 import com.cb.repository.StokBarangRepository;
 import com.cb.repository.TransaksiCabangRepository;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -126,6 +126,32 @@ public class TransactionalBlockImpl implements TransactionalBlock {
             item.setKeuntungan(keuntungan);
         }
         return new PageImpl<>(laporanCabangHeaders, pageable, laporanCabangHeaders.size());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<BahanBakuTerpakai> laporanStokTerpakai(String namaCabang, Pageable pageable) {
+        LocalDate localDate = LocalDate.now(); // For reference
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedString = localDate.format(formatter);
+
+        String sql = "SELECT * FROM bahan_terpakai WHERE CAST(tgl_transaksi AS DATE)='" + formattedString + "' AND nama_cabang='"+namaCabang+"' ORDER BY nama_bahan ASC";
+
+        List<BahanBakuTerpakai> bahanBakuTerpakaiList = jdbcTemplate.query(sql,new BeanPropertyRowMapper(BahanBakuTerpakai.class));
+        return new PageImpl<>(bahanBakuTerpakaiList, pageable, bahanBakuTerpakaiList.size());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<TransaksiBahanBakuCabang> laporanStokSisa(String namaCabang, Pageable pageable) {
+        LocalDate localDate = LocalDate.now(); // For reference
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedString = localDate.format(formatter);
+
+        String sql = "SELECT * FROM transaksi_bahan_baku_cabang WHERE CAST(tgl_transaksi AS DATE)='" + formattedString + "' AND nama_cabang='"+namaCabang+"' ORDER BY nama_bahan ASC";
+
+        List<TransaksiBahanBakuCabang> bahanBakuTerpakaiList = jdbcTemplate.query(sql, new BeanPropertyRowMapper(TransaksiBahanBakuCabang.class));
+        return new PageImpl<>(bahanBakuTerpakaiList, pageable, bahanBakuTerpakaiList.size());
     }
 
     @Override

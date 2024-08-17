@@ -42,6 +42,7 @@
                                 <th><a class="sorted">Omzet</th>
                                 <th><a class="sorted">Pengeluaran</th>
                                 <th><a class="sorted">Keuntungan</th>
+                                <th><a class="sorted">Stok Barang</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -53,6 +54,12 @@
                                 <td th:text="${#numbers.formatDecimal(st.totalOmzet,0,'COMMA', 0, 'POINT')}">Omzet</td>
                                 <td th:text="${#numbers.formatDecimal(st.totalPengeluaran,0,'COMMA', 0, 'POINT')}">Pengeluaran</td>
                                 <td th:text="${#numbers.formatDecimal(st.keuntungan,0,'COMMA', 0, 'POINT')}">Keuntungan</td>
+                                <td>
+                                    <a href="#" class="btn btn-primary" th:href="@{/laporan-cabang/laporan-terpakai(namaCabang=${st.namaCabang})}"
+                                       title="Terpakai"><span>Terpakai</span></a>
+                                    <a href="#" class="btn btn-primary" th:href="@{/laporan-cabang/laporan-sisa(namaCabang=${st.namaCabang})}"
+                                       title="Sisa"><span>Sisa</span></a>
+                                </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(listCabang.content)}">
                                 <td colspan="13" class="text-center">Data tidak ditemukan</td>
