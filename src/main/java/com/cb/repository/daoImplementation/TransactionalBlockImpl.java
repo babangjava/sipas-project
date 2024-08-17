@@ -203,7 +203,7 @@ public class TransactionalBlockImpl implements TransactionalBlock {
                 bahanBakuTerpakai.setQty(item.getQty());
                 bahanBakuTerpakai.setTotal(item.getQty() * item.getHarga());
 
-                List<TransaksiBahanBakuCabang> matchingTransactions = transaksiCabangRepository.findByNamaGudangAndNamaBahan(obj.getNamaGudang(), item.getNamaBahan());
+                List<TransaksiBahanBakuCabang> matchingTransactions = transaksiCabangRepository.findByNamaGudangAndNamaCabangAndNamaBahanAndTglTransaksi(bahanBakuTerpakai.getNamaGudang(), bahanBakuTerpakai.getNamaCabang(), bahanBakuTerpakai.getNamaBahan(), bahanBakuTerpakai.getTglTransaksi());
 
                 for (TransaksiBahanBakuCabang transaksiBahanBakuCabang : matchingTransactions) {
                     int updatedQty = transaksiBahanBakuCabang.getQty() - item.getQty();

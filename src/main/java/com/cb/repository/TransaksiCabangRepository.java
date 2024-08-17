@@ -17,5 +17,5 @@ import java.util.Optional;
 public interface TransaksiCabangRepository extends CrudRepository<TransaksiBahanBakuCabang, Long>, PagingAndSortingRepository<TransaksiBahanBakuCabang, Long> {
     Page<TransaksiBahanBakuCabang> findByNamaCabangContainingIgnoreCaseAndTglTransaksiBetweenOrderByTglTransaksiDesc(String name, LocalDate to, LocalDate from, Pageable pageable);
     List<TransaksiBahanBakuCabang> findByNamaGudangContainingIgnoreCaseOrderById(@Param("namaGudang") String namaGudang);
-    List<TransaksiBahanBakuCabang> findByNamaGudangAndNamaBahan(String namaGudang, String namaBahan);
+    List<TransaksiBahanBakuCabang> findByNamaGudangAndNamaCabangAndNamaBahanAndTglTransaksi(String namaGudang, String namaCabang, String namaBahan, LocalDate to);
 }

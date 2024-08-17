@@ -38,7 +38,7 @@
                         </div>
                         <div class="form-group">
                             <label for="namaGudang">Nama Gudang</label>
-                            <select th:field="*{namaGudang}" class="form-control" id="namaGudang" onchange="getDataBarang(this)">
+                            <select th:field="*{namaGudang}" class="form-control" id="namaGudang">
                                 <option value="">Pilih Nama Gudang</option>
                                 <option th:each="bahan : ${gudangList}" th:value="${bahan.namaGudang}" th:text="${bahan.namaGudang}"></option>
                             </select>
@@ -75,7 +75,7 @@
                                name="total" class="form-control" id="total" placeholder="Total" />
 
                         <div class="form-group">
-                            <a th:href="@{/transaksi/cabang/list}" class="btn btn-default" role="button" title="Back list">
+                            <a th:href="@{/transaksi/bahan-terpakai/list}" class="btn btn-default" role="button" title="Back list">
                                 <span aria-hidden="true"></span>Batal
                             </a>
                             <button type="submit" class="box-title btn btn-primary" title="Save Data">Simpan</button>
@@ -85,24 +85,6 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript">
-        function getDataBarang(obj) {
-            var namaBahan = $("#namaBahan").val();
-            if (namaBahan) {
-                $.ajax({
-                    url: '/api/bahan-baku/' + namaBahan,
-                    type: 'GET',
-                    success: function(data) {
-                        $("#harga").val(data.harga);
-                        $("#type").val(data.type);
-                    }
-                });
-            } else {
-                $("#harga").val('');
-                $("#type").val('');
-            }
-        }
-	</script>
 </div>
 </body>
 </html>
